@@ -3,7 +3,7 @@ import board
 from cedargrove_nau7802 import NAU7802
 import smbus2 as smbus
 import math
-import bmp388
+import bmp388 as bmp
 
 # define BMP388 Device I2C address
 
@@ -247,7 +247,7 @@ zero_channel()  # Calibrate and zero channel
 
 print("LOAD CELL READY")
 
-bmp388 = BMP388()
+bmp.bmp388 = BMP388()
 print("BMP388 READY")
 
 ### Main loop: Read load cells and display raw values
@@ -256,5 +256,5 @@ while True:
     nau7802.channel = 1
     value = read_raw_value()
     print("Load Cell %1.0f Raw Value: %7.0f" % (nau7802.channel, value))
-    temperature,pressure,altitude = bmp388.get_temperature_and_pressure_and_altitude()
+    temperature,pressure,altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
     print('Temperature = %.1f Pressure = %.2f  Altitude =%.2f '%(temperature/100.0,pressure/100.0,altitude/100.0))
