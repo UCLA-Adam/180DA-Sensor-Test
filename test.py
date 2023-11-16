@@ -247,7 +247,7 @@ zero_channel()  # Calibrate and zero channel
 
 print("LOAD CELL READY")
 
-bmp.bmp388 = BMP388()
+bmp.bmp388 = bmp.BMP388()
 print("BMP388 READY")
 
 ### Main loop: Read load cells and display raw values
