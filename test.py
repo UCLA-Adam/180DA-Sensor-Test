@@ -244,16 +244,17 @@ time.sleep(3)
 nau7802.channel = 1
 zero_channel()  # Calibrate and zero channel
 
-print("READY")
+print("LOAD CELL READY")
 
 bmp388 = BMP388()
+print("BMP388 READY")
 
 ### Main loop: Read load cells and display raw values
 while True:
     print("=====")
     nau7802.channel = 1
     value = read_raw_value()
-    print("Load cell %1.0f Raw Value: %7.0f" % (nau7802.channel, value))
+    print("Load Cell %1.0f Raw Value: %7.0f" % (nau7802.channel, value))
     time.sleep(0.5)
     temperature,pressure,altitude = bmp388.get_temperature_and_pressure_and_altitude()
     print('Temperature = %.1f Pressure = %.2f  Altitude =%.2f '%(temperature/100.0,pressure/100.0,altitude/100.0))
