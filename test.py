@@ -57,6 +57,6 @@ while True:
     print("=====")
     nau7802.channel = 1
     value = read_raw_value()
-    print("Load Cell %1.0f Raw Value: %7.0f" % (nau7802.channel, value))
+    print("NAU7802: Load Cell %1.0f Raw Value = %7.0f" % (nau7802.channel, value))
     temperature,pressure,altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
-    print('Temperature = %.1f Pressure = %.2f  Altitude = %.2f '%(temperature/100.0,pressure/100.0,altitude/100.0))
+    print('BMP388: Temperature = %.1f Pressure = %.2f  Altitude = %.2f '%(temperature/100.0,pressure/100.0,altitude/100.0))
