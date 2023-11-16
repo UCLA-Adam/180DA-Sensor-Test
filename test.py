@@ -8,7 +8,6 @@ import bmp388 as bmp
 # Instantiate 24-bit load sensor ADC; two channels, default gain of 128
 nau7802 = NAU7802(board.I2C(), address=0x2A, active_channels=1)
 
-
 def zero_channel():
     """Initiate internal calibration for current channel.Use when scale is started,
     a new channel is selected, or to adjust for measurement drift. Remove weight
@@ -60,4 +59,4 @@ while True:
     value = read_raw_value()
     print("Load Cell %1.0f Raw Value: %7.0f" % (nau7802.channel, value))
     temperature,pressure,altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
-    print('Temperature = %.1f Pressure = %.2f  Altitude =%.2f '%(temperature/100.0,pressure/100.0,altitude/100.0))
+    print('Temperature = %.1f Pressure = %.2f  Altitude = %.2f '%(temperature/100.0,pressure/100.0,altitude/100.0))
