@@ -1,3 +1,9 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import time
+import smbus
+import math
+
 # define BMP388 Device I2C address
 
 I2C_ADD_BMP388_AD0_LOW = 0x76
@@ -194,3 +200,20 @@ class BMP388(object):
                               0.1903))
 
         return (temperature, pressure, altitude)
+
+if __name__ == '__main__':
+
+ import time
+ 
+ print("BMP388 Test Program ...\n")
+ 
+ bmp388 = BMP388()
+ 
+ while True:
+  time.sleep(0.5)
+  temperature,pressure,altitude = bmp388.get_temperature_and_pressure_and_altitude()
+  print(' Temperature = %.1f Pressure = %.2f  Altitude =%.2f '%(temperature/100.0,pressure/100.0,altitude/100.0))
+
+
+
+
