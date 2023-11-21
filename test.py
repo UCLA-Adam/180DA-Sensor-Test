@@ -4,6 +4,9 @@ from cedargrove_nau7802 import NAU7802
 import smbus2 as smbus
 import math
 import bmp388 as bmp
+import adafruit_sht4x
+import busio
+import adafruit_ltr390
 
 # Instantiate 24-bit load sensor ADC; two channels, default gain of 128
 nau7802 = NAU7802(board.I2C(), address=0x2A, active_channels=1)
@@ -52,6 +55,15 @@ print("LOAD CELL READY")
 bmp.bmp388 = bmp.BMP388()
 print("BMP388 READY")
 
+print("Found SHT4x with serial number", hex(sht.serial_number))
+print("Current mode is: ", adafruit_sht4x.Mode.string[sht.mode])
+sht = adafruit_sht4x.SHT4x(board.I2C())
+print("SHT4X READY")
+
+i2c = busio.I2C(board.SCL, board.SDA)
+ltr = adafruit_ltr390.LTR390(i2c)
+print("LTR390 READY")
+
 ### Main loop: Read load cells and display raw values
 while True:
     print("=====")
@@ -59,4 +71,5 @@ while True:
     value = read_raw_value()
     print("NAU7802: Load Cell %1.0f Raw Value = %7.0f" % (nau7802.channel, value))
     temperature,pressure,altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
-    print('BMP388: Temperature = %.1f Pressure = %.2f  Altitude = %.2f '%(temperature/100.0,pressure/100.0,altitude/100.0))
+    print('BMP388: Temperature = %.1fu"\xb0"C Pressure = %.2f  Altitude = %.2f '%(temperature/100.0,pressure/100.0,altitude/100.0))
+    print('SHT4X: Temperature = %.1fu"\xb0"C Humidity = %.1f' %sht.temperature,sht.relative_humidity)
