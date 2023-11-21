@@ -73,5 +73,5 @@ while True:
     temperature,pressure,altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
     print('BMP388: Temperature = %.1fC Pressure = %.2f  Altitude = %.2f '%(temperature/100.0,pressure/100.0,altitude/100.0))
     print('SHT4X: Temperature = %.1fC Humidity = %.1f' %(sht.temperature,sht.relative_humidity))
-    print("LTR390: UV = ", ltr.uvs, "UV Index = ", ltr.uvi, "Lux = ", ltr.lux, "Ambient Light = ", ltr.light)
+    print('LTR390: UV = %.1f UV Index = %.1f Lux = %.1f Ambient Light = %.1f' %(ltr.uvs, ltr.uvi, ltr.lux, ltr.light))
     time.sleep(1.0)
