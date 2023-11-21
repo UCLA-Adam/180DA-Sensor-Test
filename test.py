@@ -71,5 +71,5 @@ while True:
     value = read_raw_value()
     print("NAU7802: Load Cell %1.0f Raw Value = %7.0f" % (nau7802.channel, value))
     temperature,pressure,altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
-    print('BMP388: Temperature = %.1fu"\xb0"C Pressure = %.2f  Altitude = %.2f '%(temperature/100.0,pressure/100.0,altitude/100.0))
-    print('SHT4X: Temperature = %.1fu"\xb0"C Humidity = %.1f' %sht.temperature,sht.relative_humidity)
+    print('BMP388: Temperature = %.1fC Pressure = %.2f  Altitude = %.2f '%(temperature/100.0,pressure/100.0,altitude/100.0))
+    print('SHT4X: Temperature = %.1fC Humidity = %.1f' %(sht.temperature,sht.relative_humidity))
