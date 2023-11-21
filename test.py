@@ -55,9 +55,9 @@ print("LOAD CELL READY")
 bmp.bmp388 = bmp.BMP388()
 print("BMP388 READY")
 
+sht = adafruit_sht4x.SHT4x(board.I2C())
 print("Found SHT4x with serial number", hex(sht.serial_number))
 print("Current mode is: ", adafruit_sht4x.Mode.string[sht.mode])
-sht = adafruit_sht4x.SHT4x(board.I2C())
 print("SHT4X READY")
 
 i2c = busio.I2C(board.SCL, board.SDA)
