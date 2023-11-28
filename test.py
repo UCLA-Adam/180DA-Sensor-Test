@@ -7,6 +7,11 @@ import bmp388 as bmp
 import adafruit_sht4x
 import busio
 import adafruit_ltr390
+import cv2
+import numpy as py
+
+# Instantiate the camera device
+cap = cv2.VideoCapture(0)
 
 # Instantiate 24-bit load sensor ADC; two channels, default gain of 128
 nau7802 = NAU7802(board.I2C(), address=0x2A, active_channels=1)
@@ -66,12 +71,77 @@ print("LTR390 READY")
 
 ### Main loop: Read load cells and display raw values
 while True:
+
+    # If we can get video, read
+    success, img = cap.read()
+
+    # If we can not get video, break
+    if not success: 
+        break
+
+    # Look for QR codes and add labels 
+    for code in decode(img):
+        # Get QR code contents
+        decoded_data = code.data.decode("utf-8")
+        # Print what is decoded from that QR code into console
+        print(decoded_data)
+        # Get bounding QR code box
+        rect_pts = code.rect
+        # If info in QR code, display on screen in frame
+        if decoded_data:
+            cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 0), 2)
+    
+    # Get readings and round them
+    
+    loadCellRawValue = round(read_raw_value())
+    sht_temperature = round(sht.temperature, 1)
+    sht_relative_humidity = round(sht.relative_humidity, 1)
+    bmp_temperature,bmp_pressure,bmp_altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
+    bmp_pressure = round((bmp_pressure/100.0), 2)
+    ltr_uvi = round(ltr.uvi, 1)
+    ltr_lux = round(ltr.luxm, 1)
+    
+    # uvs - The raw UV light measurement.
+    # light - The raw ambient light measurement.
+    # uvi - The calculated UV Index value.
+    # lux - The calculated Lux ambient light value.
+
+    # Print the sensor readings to console
     print("=====")
-    nau7802.channel = 1
-    value = read_raw_value()
-    print("NAU7802: Load Cell %1.0f Raw Value = %7.0f" % (nau7802.channel, value))
-    temperature,pressure,altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
-    print('BMP388: Temperature = %.1f C Pressure = %.2f  Altitude = %.2f '%(temperature/100.0,pressure/100.0,altitude/100.0))
-    print('SHT4X: Temperature = %.1f C Humidity = %.1f' %(sht.temperature,sht.relative_humidity))
-    print('LTR390: UV = %.1f UV Index = %.1f Lux = %.1f Ambient Light = %.1f' %(ltr.uvs, ltr.uvi, ltr.lux, ltr.light))
-    time.sleep(1.0)
+
+    print('NAU7802: Raw Value = ', loadCellRawValue)
+
+    print('SHT4X: Temperature = ', shr_temperature, 'Humidity = ', sht_relative_humidity)
+
+    print('BMP388: Pressure = ', bmp_pressure)
+
+    print('LTR390: UV Index = ', ltr.uvi, 'Lux = ', ltr_lux)
+
+    # add readings to an array
+    overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
+                    'Temp: ' + str(sht_temperature), 
+                    'Humidity: ' + str(sht_relative_humidity),
+                    'Pressure: ' + str(bmp_pressure)
+                    'UV Index: ' + str(ltr_uvi),
+                    'Lux: ' + str(ltr_lux)]
+
+    # Display the array of data on the top left
+    frame = np.ones([400,400,3])*255
+    offset = 35
+    x,y = 50,50
+    for idx,lbl in enumerate(overlayArray):
+        cv2.putText(frame, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,0,0), 2)
+
+    # Display the image
+    cv2.imshow("image", img)
+
+    # waitKey(0) will display the window infinitely until any keypress (it is suitable for image display).
+    # waitKey(1) will display a frame for 1 ms, after which display will be automatically closed.
+    cv2.waitKey(1)
+
+    # time.sleep(1.0)
+
+
+
+
+cap.release()
