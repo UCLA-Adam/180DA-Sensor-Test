@@ -104,7 +104,7 @@ sht_relative_humidity = round(sht.relative_humidity, 1)
 bmp_temperature,bmp_pressure,bmp_altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
 bmp_pressure = round((bmp_pressure/100.0), 2)
 ltr_uvi = round(ltr.uvi, 1)
-ltr_lux = round(ltr.luxm, 1)
+ltr_lux = round(ltr.lux, 1)
 
 # Put readings to an array to display
 overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
