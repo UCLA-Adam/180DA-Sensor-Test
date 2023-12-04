@@ -149,7 +149,7 @@ while True:
         bmp_temperature,bmp_pressure,bmp_altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
         bmp_pressure = round((bmp_pressure/100.0), 2)
         ltr_uvi = round(ltr.uvi, 1)
-        ltr_lux = round(ltr.luxm, 1)
+        ltr_lux = round(ltr.lux, 1)
         
         # uvs - The raw UV light measurement.
         # light - The raw ambient light measurement.
