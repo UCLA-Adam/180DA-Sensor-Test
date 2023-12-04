@@ -9,6 +9,7 @@ import busio
 import adafruit_ltr390
 import cv2
 from pyzbar.pyzbar import decode
+from PIL import Image
 import numpy as py
 
 
