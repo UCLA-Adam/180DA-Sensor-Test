@@ -146,7 +146,7 @@ while True:
             # call color function
             #
             #
-            cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (r, g, b), 2)
+            cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 0), 2)
     
     # Check if X seconds has passed, if so...
     if timeCounter == ms: 
