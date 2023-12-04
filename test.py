@@ -8,7 +8,9 @@ import adafruit_sht4x
 import busio
 import adafruit_ltr390
 import cv2
+from pyzbar.pyzbar import decode
 import numpy as py
+
 
 # Instantiate the camera device
 cap = cv2.VideoCapture(0)
