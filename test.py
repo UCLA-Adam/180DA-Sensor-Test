@@ -9,7 +9,7 @@ import busio
 import adafruit_ltr390
 import cv2
 from pyzbar.pyzbar import decode
-import numpy as py
+import numpy as np
 
 
 # Instantiate the camera device
