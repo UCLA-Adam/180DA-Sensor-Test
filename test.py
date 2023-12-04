@@ -30,7 +30,26 @@ def zero_channel():
     )
     print("...channel %1d zeroed" % nau7802.channel)
 
+class container:
+  
+    def __init__(thisContainer, label, initalMass, currentMass):
+        thisContainer.label = label
+        thisContainer.initialMass = initalMass
+        thisContainer.currentMass = currentMass
+    
+    def percentage(thisContainer):
+        return str(thisContainer.currentMass / thisContainer.initialMass * 100) + '%'
 
+    def labelColor(thisContainer):
+        percent  =  round(thisContainer.currentMass / thisContainer.initialMass * 100, 2)
+        if (percent >= 66.0):
+            r,g,b = 0,255,0
+        elif (percent >= 33.00):
+            r,g,b = 255,255,0
+        else:
+            r,g,b = 255,0,0
+        return r,g,b
+    
 def read_raw_value(samples=5):
     """Read and average consecutive raw sample values. Return average raw value."""
     sample_sum = 0
@@ -41,6 +60,9 @@ def read_raw_value(samples=5):
         sample_sum = sample_sum + nau7802.read()
         sample_count -= 1
     return int(sample_sum / samples)
+    
+    
+
 
 
 # Instantiate and calibrate load cell inputs
@@ -69,6 +91,34 @@ i2c = busio.I2C(board.SCL, board.SDA)
 ltr = adafruit_ltr390.LTR390(i2c)
 print("LTR390 READY")
 
+# Initalize counter, we want to get info from the cells every X seconds
+seconds = 3
+# Convert to ms, frames are updated every 1 ms.
+ms = seconds * 1000 
+timeCounter = 0
+
+# Get readings and round them
+loadCellRawValue = round(read_raw_value())
+sht_temperature = round(sht.temperature, 1)
+sht_relative_humidity = round(sht.relative_humidity, 1)
+bmp_temperature,bmp_pressure,bmp_altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
+bmp_pressure = round((bmp_pressure/100.0), 2)
+ltr_uvi = round(ltr.uvi, 1)
+ltr_lux = round(ltr.luxm, 1)
+
+# Put readings to an array to display
+overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
+                'Temp: ' + str(sht_temperature), 
+                'Humidity: ' + str(sht_relative_humidity),
+                'Pressure: ' + str(bmp_pressure),
+                'UV Index: ' + str(ltr_uvi),
+                'Lux: ' + str(ltr_lux)]
+
+                # uvs - The raw UV light measurement.
+                # light - The raw ambient light measurement.
+                # uvi - The calculated UV Index value.
+                # lux - The calculated Lux ambient light value.
+
 ### Main loop: Read load cells and display raw values
 while True:
 
@@ -78,6 +128,8 @@ while True:
     # If we can not get video, break
     if not success: 
         break
+
+    # r,g,b = c1.color() ----> set this later?
 
     # Look for QR codes and add labels 
     for code in decode(img):
@@ -89,41 +141,47 @@ while True:
         rect_pts = code.rect
         # If info in QR code, display on screen in frame
         if decoded_data:
-            cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 0), 2)
+            # call color function
+            #
+            #
+            cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (r, g, b), 2)
     
-    # Get readings and round them
+    # Check if X seconds has passed, if so...
+    if timeCounter == ms: 
+        timeCounter = 0
+
+        # Update readings and round them
+        loadCellRawValue = round(read_raw_value())
+        sht_temperature = round(sht.temperature, 1)
+        sht_relative_humidity = round(sht.relative_humidity, 1)
+        bmp_temperature,bmp_pressure,bmp_altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
+        bmp_pressure = round((bmp_pressure/100.0), 2)
+        ltr_uvi = round(ltr.uvi, 1)
+        ltr_lux = round(ltr.luxm, 1)
     
-    loadCellRawValue = round(read_raw_value())
-    sht_temperature = round(sht.temperature, 1)
-    sht_relative_humidity = round(sht.relative_humidity, 1)
-    bmp_temperature,bmp_pressure,bmp_altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
-    bmp_pressure = round((bmp_pressure/100.0), 2)
-    ltr_uvi = round(ltr.uvi, 1)
-    ltr_lux = round(ltr.luxm, 1)
-    
-    # uvs - The raw UV light measurement.
-    # light - The raw ambient light measurement.
-    # uvi - The calculated UV Index value.
-    # lux - The calculated Lux ambient light value.
+        # uvs - The raw UV light measurement.
+        # light - The raw ambient light measurement.
+        # uvi - The calculated UV Index value.
+        # lux - The calculated Lux ambient light value.
 
-    # Print the sensor readings to console
-    print("=====")
+        # Print the sensor readings to console
+        print("=====")
 
-    print('NAU7802: Raw Value = ', loadCellRawValue)
+        print('NAU7802: Raw Value = ', loadCellRawValue)
 
-    print('SHT4X: Temperature = ', shr_temperature, 'Humidity = ', sht_relative_humidity)
+        print('SHT4X: Temperature = ', sht_temperature, 'Humidity = ', sht_relative_humidity)
 
-    print('BMP388: Pressure = ', bmp_pressure)
+        print('BMP388: Pressure = ', bmp_pressure)
 
-    print('LTR390: UV Index = ', ltr.uvi, 'Lux = ', ltr_lux)
+        print('LTR390: UV Index = ', ltr.uvi, 'Lux = ', ltr_lux)
 
-    # add readings to an array
-    overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
-                    'Temp: ' + str(sht_temperature), 
-                    'Humidity: ' + str(sht_relative_humidity),
-                    'Pressure: ' + str(bmp_pressure)
-                    'UV Index: ' + str(ltr_uvi),
-                    'Lux: ' + str(ltr_lux)]
+        # update readings to an array
+        overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
+                        'Temp: ' + str(sht_temperature), 
+                        'Humidity: ' + str(sht_relative_humidity),
+                        'Pressure: ' + str(bmp_pressure),
+                        'UV Index: ' + str(ltr_uvi),
+                        'Lux: ' + str(ltr_lux)]
 
     # Display the array of data on the top left
     frame = np.ones([400,400,3])*255
@@ -138,6 +196,7 @@ while True:
     # waitKey(0) will display the window infinitely until any keypress (it is suitable for image display).
     # waitKey(1) will display a frame for 1 ms, after which display will be automatically closed.
     cv2.waitKey(1)
+    timeCounter += 1
 
     # time.sleep(1.0)
 
