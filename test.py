@@ -193,11 +193,11 @@ while True:
         cv2.putText(frame, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,0,0), 2)
 
     # Display the image
-    cv2.imshow("image", img)
+    #cv2.imshow("image", img)
 
     # waitKey(0) will display the window infinitely until any keypress (it is suitable for image display).
     # waitKey(1) will display a frame for 1 ms, after which display will be automatically closed.
-    cv2.waitKey(1)
+    #cv2.waitKey(1)
     timeCounter += 1
 
     # time.sleep(1.0)
