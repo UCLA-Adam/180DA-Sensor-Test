@@ -11,7 +11,7 @@ import cv2
 import numpy as py
 
 # Instantiate the camera device
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 # Instantiate 24-bit load sensor ADC; two channels, default gain of 128
 nau7802 = NAU7802(board.I2C(), address=0x2A, active_channels=1)
