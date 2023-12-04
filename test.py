@@ -141,46 +141,44 @@ while True:
         print(decoded_data)
         # Get bounding QR code box
             # Check if X seconds has passed, if so...
-        if timeCounter == ms: 
-            timeCounter = 0
     
-            # Update readings and round them
-            loadCellRawValue = round(read_raw_value())
-            sht_temperature = round(sht.temperature, 1)
-            sht_relative_humidity = round(sht.relative_humidity, 1)
-            bmp_temperature,bmp_pressure,bmp_altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
-            bmp_pressure = round((bmp_pressure/100.0), 2)
-            ltr_uvi = round(ltr.uvi, 1)
-            ltr_lux = round(ltr.luxm, 1)
+        # Update readings and round them
+        loadCellRawValue = round(read_raw_value())
+        sht_temperature = round(sht.temperature, 1)
+        sht_relative_humidity = round(sht.relative_humidity, 1)
+        bmp_temperature,bmp_pressure,bmp_altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
+        bmp_pressure = round((bmp_pressure/100.0), 2)
+        ltr_uvi = round(ltr.uvi, 1)
+        ltr_lux = round(ltr.luxm, 1)
         
-            # uvs - The raw UV light measurement.
-            # light - The raw ambient light measurement.
-            # uvi - The calculated UV Index value.
-            # lux - The calculated Lux ambient light value.
+        # uvs - The raw UV light measurement.
+        # light - The raw ambient light measurement.
+        # uvi - The calculated UV Index value.
+        # lux - The calculated Lux ambient light value.
     
-            # Print the sensor readings to console
-            print("=====")
+        # Print the sensor readings to console
+        print("=====")
     
-            print('NAU7802: Raw Value = ', loadCellRawValue)
+        print('NAU7802: Raw Value = ', loadCellRawValue)
     
-            print('SHT4X: Temperature = ', sht_temperature, 'Humidity = ', sht_relative_humidity)
+        print('SHT4X: Temperature = ', sht_temperature, 'Humidity = ', sht_relative_humidity)
     
-            print('BMP388: Pressure = ', bmp_pressure)
+        print('BMP388: Pressure = ', bmp_pressure)
     
-            print('LTR390: UV Index = ', ltr.uvi, 'Lux = ', ltr_lux)
-            # update readings to an array
-            overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
-                            'Temp: ' + str(sht_temperature), 
-                            'Humidity: ' + str(sht_relative_humidity),
-                            'Pressure: ' + str(bmp_pressure),
-                            'UV Index: ' + str(ltr_uvi),
-                            'Lux: ' + str(ltr_lux)]
-            # Display the array of data on the top left
-            frame = np.ones([400,400,3])*255
-            offset = 35
-            x,y = 50,50
-            for idx,lbl in enumerate(overlayArray):
-                cv2.putText(frame, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,0,0), 2)
+        print('LTR390: UV Index = ', ltr.uvi, 'Lux = ', ltr_lux)
+        # update readings to an array
+        overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
+                        'Temp: ' + str(sht_temperature), 
+                        'Humidity: ' + str(sht_relative_humidity),
+                        'Pressure: ' + str(bmp_pressure),
+                        'UV Index: ' + str(ltr_uvi),
+                        'Lux: ' + str(ltr_lux)]
+        # Display the array of data on the top left
+        frame = np.ones([400,400,3])*255
+        offset = 35
+        x,y = 50,50
+        for idx,lbl in enumerate(overlayArray):
+            cv2.putText(frame, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,0,0), 2)
         rect_pts = code.rect
         # If info in QR code, display on screen in frame
         if decoded_data:
