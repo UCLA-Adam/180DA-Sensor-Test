@@ -7,7 +7,7 @@ import bmp388 as bmp
 import adafruit_sht4x
 import busio
 import adafruit_ltr390
-import cv2
+import opencv-python
 import numpy as py
 
 # Instantiate the camera device
