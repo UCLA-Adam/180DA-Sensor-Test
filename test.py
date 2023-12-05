@@ -10,6 +10,7 @@ import adafruit_ltr390
 import cv2
 from pyzbar.pyzbar import decode
 import numpy as np
+import os 
 
 
 # Instantiate the camera device
