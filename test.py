@@ -106,9 +106,9 @@ ltr_lux = round(ltr.lux, 1)
 
 # Put readings to an array to display
 overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
-                'Temp: ' + str(sht_temperature), 
-                'Humidity: ' + str(sht_relative_humidity),
-                'Pressure: ' + str(bmp_pressure),
+                'Temp: ' + str(sht_temperature) + '°C', 
+                'Humidity: ' + str(sht_relative_humidity) + '%',
+                'Pressure: ' + str(bmp_pressure) + 'Pa',
                 'UV Index: ' + str(ltr_uvi),
                 'Lux: ' + str(ltr_lux)]
 
