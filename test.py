@@ -185,7 +185,7 @@ while True:
     for idx,lbl in enumerate(overlayArray):
         cv2.putText(img, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,255,0), 2)
 
-    filename = 'savedImage' + imageCount + '.jpg'
+    filename = 'savedImage' + str(imageCount) + '.jpg'
     if imageCount == 60:
         imageCount = 0
         
