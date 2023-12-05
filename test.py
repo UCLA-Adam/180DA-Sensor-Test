@@ -116,6 +116,8 @@ overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
                 # uvi - The calculated UV Index value.
                 # lux - The calculated Lux ambient light value.
 
+imageCount = 0
+
 ### Main loop: Read load cells and display raw values
 while True:
 
@@ -179,14 +181,16 @@ while True:
     # Display the array of data on the top left
     # frame = np.ones([400,400,3])*255
     offset = 35
-    x,y = 50,50
+    x,y = 10,10
     for idx,lbl in enumerate(overlayArray):
         cv2.putText(img, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,255,0), 2)
 
-
-
-    filename = 'savedImage.jpg'
+    filename = 'savedImage' + imageCount + '.jpg'
+    if imageCount == 60:
+        imageCount = 0
+        
     cv2.imwrite(filename, img) 
+    imageCount += 1
 
 
 
