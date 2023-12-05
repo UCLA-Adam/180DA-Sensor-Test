@@ -137,11 +137,7 @@ while True:
     for code in decode(img):
         # Get QR code contents
         decoded_data = code.data.decode("utf-8")
-        # Print what is decoded from that QR code into console
-        print(decoded_data)
-        # Get bounding QR code box
-            # Check if X seconds has passed, if so...
-    
+
         # Update readings and round them
         loadCellRawValue = round(read_raw_value())
         sht_temperature = round(sht.temperature, 1)
@@ -166,6 +162,10 @@ while True:
         print('BMP388: Pressure = ', bmp_pressure)
     
         print('LTR390: UV Index = ', ltr.uvi, 'Lux = ', ltr_lux)
+        
+        # Print what is decoded from that QR code into console
+        print(decoded_data)
+    
         # update readings to an array
         overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
                         'Temp: ' + str(sht_temperature), 
@@ -179,6 +179,8 @@ while True:
         x,y = 50,50
         for idx,lbl in enumerate(overlayArray):
             cv2.putText(frame, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,0,0), 2)
+        
+         # Get bounding QR code box
         rect_pts = code.rect
         # If info in QR code, display on screen in frame
         if decoded_data:
