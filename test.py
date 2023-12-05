@@ -172,7 +172,7 @@ while True:
             cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 2)
 
     # Update readings and round them
-    loadCellRawValue = round(read_raw_value())
+    loadCellRawValue = round(read_raw_value()) * gain
     sht_temperature = round(sht.temperature, 1)
     sht_relative_humidity = round(sht.relative_humidity, 1)
     bmp_temperature,bmp_pressure,bmp_altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
