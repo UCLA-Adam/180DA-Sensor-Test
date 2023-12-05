@@ -162,7 +162,7 @@ while True:
         print('BMP388: Pressure = ', bmp_pressure)
     
         print('LTR390: UV Index = ', ltr.uvi, 'Lux = ', ltr_lux)
-        
+
         # Print what is decoded from that QR code into console
         print(decoded_data)
     
@@ -188,7 +188,8 @@ while True:
             #
             #
             cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 0), 2)
-    
+
+        cv2.imwrite("output.txt", img) 
 
 
 
