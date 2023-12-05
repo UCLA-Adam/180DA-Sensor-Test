@@ -135,6 +135,8 @@ while True:
         
          # Get bounding QR code box
         rect_pts = code.rect
+        # Print what is decoded from that QR code into console
+        print(decoded_data)
         # If info in QR code, display on screen in frame
         if decoded_data:
             # call color function
@@ -166,8 +168,6 @@ while True:
     print('BMP388: Pressure = ', bmp_pressure)
 
     print('LTR390: UV Index = ', ltr.uvi, 'Lux = ', ltr_lux)
-    # Print what is decoded from that QR code into console
-    print(decoded_data)
 
     # update readings to an array
     overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
