@@ -12,6 +12,7 @@ from pyzbar.pyzbar import decode
 import numpy as np
 import os 
 
+path = './Images'
 
 # Instantiate the camera device
 cap = cv2.VideoCapture(0)
@@ -144,7 +145,7 @@ while True:
             # call color function
             #
             #
-            cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 255, 0), 2)
+            cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 2)
 
     # Update readings and round them
     loadCellRawValue = round(read_raw_value())
@@ -188,8 +189,8 @@ while True:
     filename = 'savedImage' + str(imageCount) + '.jpg'
     if imageCount == 60:
         imageCount = 0
-        
-    cv2.imwrite(filename, img) 
+    
+    cv2.imwrite(os.path.join(path , filename), img)
     imageCount += 1
 
 
