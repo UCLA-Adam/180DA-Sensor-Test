@@ -175,7 +175,7 @@ while True:
                         'UV Index: ' + str(ltr_uvi),
                         'Lux: ' + str(ltr_lux)]
         # Display the array of data on the top left
-        frame = np.ones([400,400,3])*255
+        # frame = np.ones([400,400,3])*255
         offset = 35
         x,y = 50,50
         for idx,lbl in enumerate(overlayArray):
