@@ -80,7 +80,7 @@ def calibrate_weight_sensor():
     item_weight_reading = read_raw_value()
 
     # Calculate the calibration parameters
-    gain = ((item_weight_reading - empty_weight_reading) / item_weight)^-1
+    gain = item_weight / (item_weight_reading - empty_weight_reading)
 
     # Print the calibration parameters
     print("Gain:", gain)
