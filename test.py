@@ -94,12 +94,6 @@ i2c = busio.I2C(board.SCL, board.SDA)
 ltr = adafruit_ltr390.LTR390(i2c)
 print("LTR390 READY")
 
-# Initalize counter, we want to get info from the cells every X seconds
-seconds = 3
-# Convert to ms, frames are updated every 1 ms.
-ms = seconds * 1000 
-timeCounter = 0
-
 # Get readings and round them
 loadCellRawValue = round(read_raw_value())
 sht_temperature = round(sht.temperature, 1)
@@ -138,48 +132,6 @@ while True:
     for code in decode(img):
         # Get QR code contents
         decoded_data = code.data.decode("utf-8")
-
-        # Update readings and round them
-        loadCellRawValue = round(read_raw_value())
-        sht_temperature = round(sht.temperature, 1)
-        sht_relative_humidity = round(sht.relative_humidity, 1)
-        bmp_temperature,bmp_pressure,bmp_altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
-        bmp_pressure = round((bmp_pressure/100.0), 2)
-        ltr_uvi = round(ltr.uvi, 1)
-        ltr_lux = round(ltr.lux, 1)
-        
-        # uvs - The raw UV light measurement.
-        # light - The raw ambient light measurement.
-        # uvi - The calculated UV Index value.
-        # lux - The calculated Lux ambient light value.
-    
-        # Print the sensor readings to console
-        print("=====")
-    
-        print('NAU7802: Raw Value = ', loadCellRawValue)
-    
-        print('SHT4X: Temperature = ', sht_temperature, 'Humidity = ', sht_relative_humidity)
-    
-        print('BMP388: Pressure = ', bmp_pressure)
-    
-        print('LTR390: UV Index = ', ltr.uvi, 'Lux = ', ltr_lux)
-
-        # Print what is decoded from that QR code into console
-        print(decoded_data)
-    
-        # update readings to an array
-        overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
-                        'Temp: ' + str(sht_temperature), 
-                        'Humidity: ' + str(sht_relative_humidity),
-                        'Pressure: ' + str(bmp_pressure),
-                        'UV Index: ' + str(ltr_uvi),
-                        'Lux: ' + str(ltr_lux)]
-        # Display the array of data on the top left
-        # frame = np.ones([400,400,3])*255
-        offset = 35
-        x,y = 50,50
-        for idx,lbl in enumerate(overlayArray):
-            cv2.putText(img, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,255,0), 2)
         
          # Get bounding QR code box
         rect_pts = code.rect
@@ -190,8 +142,51 @@ while True:
             #
             cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 255, 0), 2)
 
-        filename = 'savedImage.jpg'
-        cv2.imwrite(filename, img) 
+    # Update readings and round them
+    loadCellRawValue = round(read_raw_value())
+    sht_temperature = round(sht.temperature, 1)
+    sht_relative_humidity = round(sht.relative_humidity, 1)
+    bmp_temperature,bmp_pressure,bmp_altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
+    bmp_pressure = round((bmp_pressure/100.0), 2)
+    ltr_uvi = round(ltr.uvi, 1)
+    ltr_lux = round(ltr.lux, 1)
+    
+    # uvs - The raw UV light measurement.
+    # light - The raw ambient light measurement.
+    # uvi - The calculated UV Index value.
+    # lux - The calculated Lux ambient light value.
+
+    # Print the sensor readings to console
+    print("=====")
+
+    print('NAU7802: Raw Value = ', loadCellRawValue)
+
+    print('SHT4X: Temperature = ', sht_temperature, 'Humidity = ', sht_relative_humidity)
+
+    print('BMP388: Pressure = ', bmp_pressure)
+
+    print('LTR390: UV Index = ', ltr.uvi, 'Lux = ', ltr_lux)
+    # Print what is decoded from that QR code into console
+    print(decoded_data)
+
+    # update readings to an array
+    overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
+                    'Temp: ' + str(sht_temperature), 
+                    'Humidity: ' + str(sht_relative_humidity),
+                    'Pressure: ' + str(bmp_pressure),
+                    'UV Index: ' + str(ltr_uvi),
+                    'Lux: ' + str(ltr_lux)]
+    # Display the array of data on the top left
+    # frame = np.ones([400,400,3])*255
+    offset = 35
+    x,y = 50,50
+    for idx,lbl in enumerate(overlayArray):
+        cv2.putText(img, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,255,0), 2)
+
+
+
+    filename = 'savedImage.jpg'
+    cv2.imwrite(filename, img) 
 
 
 
@@ -203,7 +198,6 @@ while True:
     # waitKey(0) will display the window infinitely until any keypress (it is suitable for image display).
     # waitKey(1) will display a frame for 1 ms, after which display will be automatically closed.
     #cv2.waitKey(1)
-    timeCounter += 1
 
     # time.sleep(1.0)
 
