@@ -182,7 +182,7 @@ while True:
     # Display the array of data on the top left
     # frame = np.ones([400,400,3])*255
     offset = 35
-    x,y = 10,10
+    x,y = 10,10+35
     for idx,lbl in enumerate(overlayArray):
         cv2.putText(img, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,255,0), 2)
 
