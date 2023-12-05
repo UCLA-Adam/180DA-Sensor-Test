@@ -190,7 +190,8 @@ while True:
             #
             cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 0), 2)
 
-        cv2.imwrite("output.txt", img) 
+        filename = 'savedImage.jpg'
+        cv2.imwrite(filename, img) 
 
 
 
