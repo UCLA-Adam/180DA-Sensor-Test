@@ -179,7 +179,7 @@ while True:
         offset = 35
         x,y = 50,50
         for idx,lbl in enumerate(overlayArray):
-            cv2.putText(frame, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,0,0), 2)
+            cv2.putText(img, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,0,0), 2)
         
          # Get bounding QR code box
         rect_pts = code.rect
