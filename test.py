@@ -65,7 +65,27 @@ def read_raw_value(samples=5):
         sample_count -= 1
     return int(sample_sum / samples)
     
-    
+def calibrate_weight_sensor():
+    # Prompt the user to press enter when the sensor is empty
+    print("Press enter when the sensor is empty.")
+    input()
+
+    # Read the value of the sensor when empty
+    empty_weight_reading = read_raw_value(10)
+
+    # Prompt the user to enter the weight in grams of the item they place on the scale
+    item_weight = float(input("Enter the weight of the item in grams: "))
+
+    # Read the value of the sensor with the item on it
+    item_weight_reading = read_raw_value()
+
+    # Calculate the calibration parameters
+    gain = ((item_weight_reading - empty_weight_reading) / item_weight)^-1
+
+    # Print the calibration parameters
+    print("Gain:", gain)
+
+    return gain
 
 
 
@@ -80,6 +100,8 @@ time.sleep(3)
 
 nau7802.channel = 1
 zero_channel()  # Calibrate and zero channel
+
+gain = calibrate_weight_sensor()
 
 print("LOAD CELL READY")
 
@@ -96,7 +118,7 @@ ltr = adafruit_ltr390.LTR390(i2c)
 print("LTR390 READY")
 
 # Get readings and round them
-loadCellRawValue = round(read_raw_value())
+loadCellRawValue = round(read_raw_value()) * gain
 sht_temperature = round(sht.temperature, 1)
 sht_relative_humidity = round(sht.relative_humidity, 1)
 bmp_temperature,bmp_pressure,bmp_altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
