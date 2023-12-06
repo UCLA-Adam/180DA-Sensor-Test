@@ -127,7 +127,7 @@ ltr_uvi = round(ltr.uvi, 1)
 ltr_lux = round(ltr.lux, 1)
 
 # Put readings to an array to display
-overlayArray = ['Temp: ' + str(sht_temperature) + '°C', 
+overlayArray = ['Temp: ' + str(sht_temperature) + ' C', 
                 'Humidity: ' + str(sht_relative_humidity) + '%',
                 'Pressure: ' + str(bmp_pressure) + 'Pa',
                 'UV Index: ' + str(ltr_uvi),
@@ -194,7 +194,7 @@ while True:
     print('LTR390: UV Index = ', ltr.uvi, 'Lux = ', ltr_lux)
 
     # update readings to an array
-    overlayArray = ['Temp: ' + str(sht_temperature) + '°C', 
+    overlayArray = ['Temp: ' + str(sht_temperature) + ' C', 
                     'Humidity: ' + str(sht_relative_humidity) + '%',
                     'Pressure: ' + str(bmp_pressure) + ' Pa',
                     'UV Index: ' + str(ltr_uvi),
