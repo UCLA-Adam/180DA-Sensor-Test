@@ -197,10 +197,10 @@ while True:
     print('LTR390: UV Index = ', ltr.uvi, 'Lux = ', ltr_lux)
 
     # update readings to an array
-    overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
+    overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue) + ' g',
                     'Temp: ' + str(sht_temperature) + '°C', 
                     'Humidity: ' + str(sht_relative_humidity) + '%',
-                    'Pressure: ' + str(bmp_pressure) + 'Pa',
+                    'Pressure: ' + str(bmp_pressure) + ' Pa',
                     'UV Index: ' + str(ltr_uvi),
                     'Lux: ' + str(ltr_lux)]
     # Display the array of data on the top left
