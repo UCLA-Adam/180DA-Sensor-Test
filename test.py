@@ -12,13 +12,83 @@ from pyzbar.pyzbar import decode
 import numpy as np
 import os 
 
-path = './Images'
+# define the variables that will store information, all are floats
+# NAU7802 (loadcell)
+# SHT40 (temp + humidity sensor)
+# LTR390 (UV + LUX sensor)
+loadCellMass, gain, \
+sht_temperature, sht_relative_humidity, \
+ltr_uvi, ltr_lux = 0.0
 
-# Instantiate the camera device
-cap = cv2.VideoCapture(0)
+# Put readings to an array to display
+overlayArray = ['Load Cell Raw Value: ' + str(loadCellMass),
+                'Temp: ' + str(sht_temperature) + ' C', 
+                'Humidity: ' + str(sht_relative_humidity) + '%',
+                'UV Index: ' + str(ltr_uvi),
+                'Lux: ' + str(ltr_lux)]
 
-# Instantiate 24-bit load sensor ADC; two channels, default gain of 128
-nau7802 = NAU7802(board.I2C(), address=0x2A, active_channels=1)
+# Get readings and round them accordingly, this updates the variables defined above
+def getSensorReadings():
+    # get the raw value around to a whole number and multiply by gain
+    loadCellValue = round(read_raw_value()) * gain
+    # get the temperature (C) and round to one decimal
+    sht_temperature = round(sht.temperature, 1)
+    # get the humidity (%) and round to one decimal
+    sht_relative_humidity = round(sht.relative_humidity, 1)
+    # get the UV index and round to one decimal
+    ltr_uvi = round(ltr.uvi, 1)
+    # get the LUX level and round to whole number
+    ltr_lux = round(ltr.lux)
+
+    """ Notes on LUX level
+    Typical Lux
+    Direct Sunlight	32,000 to 100,000
+    Ambient Daylight	10,000 to 25,000
+    Overcast Daylight	1000
+    Sunset & Sunrise	400
+    Moonlight (Full moon)	1
+    Night (No moon)	< 0.01 """
+    # source https://greenbusinesslight.com/resources/lighting-lux-lumens-watts/
+
+    overlayArray = ['Load Cell Raw Value: ' + str(loadCellMass),
+                'Temp: ' + str(sht_temperature) + ' C', 
+                'Humidity: ' + str(sht_relative_humidity) + '%',
+                'UV Index: ' + str(ltr_uvi),
+                'Lux: ' + str(ltr_lux)]
+
+# this defines the container data structure which will store information we have on each container
+# containers will be identified via their numbers and their names can be adjusted in the web GUI
+class container:
+    def __init__(thisContainer, qr, initalMass, currentMass):
+        # qr is an int, ranging from 1 - 4 as this project will only have at most 4 containers 
+        # the qr codes should only store int values
+        thisContainer.qr = qr
+        
+        # initialMass is an int >= 0 representing the container's inital mass
+        # we will subtract out the known mass of the containers so that this value only reflects
+        # the mass of the contents
+        thisContainer.initialMass = initalMass
+
+        # currentMass is an int >= 0 representing the amount of product left in the container
+        # this value should always be within the following range 
+        # initialMass >= currentMass >= 0
+        thisContainer.currentMass = currentMass
+    
+    # this function returns the precentage of product in the container as a string with the % symbol
+    # the percentage is rounded to the nearest whole number
+    def percentage(thisContainer):
+        return str(round(thisContainer.currentMass / thisContainer.initialMass * 100)) + '%'
+
+    # this function returns the RGB color values that correspond with how full or empty the container is
+    # green = full, red = empty
+    def labelColor(thisContainer):
+        pct  =  round(thisContainer.currentMass / thisContainer.initialMass * 100, 2)
+        pct_diff = 1.0 - pct
+        red_color = min(255, pct_diff*2 * 255)
+        green_color = min(255, pct*2 * 255)
+        col = (red_color, green_color, 0)
+        r,g,b = red_color, green_color, 0
+        return r,g,b
 
 def zero_channel():
     """Initiate internal calibration for current channel.Use when scale is started,
@@ -34,28 +104,8 @@ def zero_channel():
     )
     print("...channel %1d zeroed" % nau7802.channel)
 
-class container:
-  
-    def __init__(thisContainer, label, initalMass, currentMass):
-        thisContainer.label = label
-        thisContainer.initialMass = initalMass
-        thisContainer.currentMass = currentMass
-    
-    def percentage(thisContainer):
-        return str(thisContainer.currentMass / thisContainer.initialMass * 100) + '%'
-
-    def labelColor(thisContainer):
-        percent  =  round(thisContainer.currentMass / thisContainer.initialMass * 100, 2)
-        if (percent >= 66.0):
-            r,g,b = 0,255,0
-        elif (percent >= 33.00):
-            r,g,b = 255,255,0
-        else:
-            r,g,b = 255,0,0
-        return r,g,b
-    
+# Read and average consecutive raw sample values from the scale. Return average raw value.
 def read_raw_value(samples=5):
-    """Read and average consecutive raw sample values. Return average raw value."""
     sample_sum = 0
     sample_count = samples
     while sample_count > 0:
@@ -64,7 +114,8 @@ def read_raw_value(samples=5):
         sample_sum = sample_sum + nau7802.read()
         sample_count -= 1
     return int(sample_sum / samples)
-    
+
+# Returns a gain value, we will store this and multiply read_raw_value's output to get the mass in grams 
 def calibrate_weight_sensor():
     # Prompt the user to press enter when the sensor is empty
     print("Press enter when the sensor is empty.")
@@ -87,7 +138,14 @@ def calibrate_weight_sensor():
 
     return gain
 
+# this defines the path that openCV frames will be stored to, this is used for debugging purposes
+path = './OpenCVImages'
 
+# Instantiate the camera device
+cap = cv2.VideoCapture(0)
+
+# Instantiate 24-bit load sensor ADC, one channel with default gain of 128
+nau7802 = NAU7802(board.I2C(), address=0x2A, active_channels=1)
 
 # Instantiate and calibrate load cell inputs
 print("*** Instantiate and calibrate load cell")
@@ -117,27 +175,7 @@ i2c = busio.I2C(board.SCL, board.SDA)
 ltr = adafruit_ltr390.LTR390(i2c)
 print("LTR390 READY")
 
-# Get readings and round them
-loadCellRawValue = round(read_raw_value()) * gain
-sht_temperature = round(sht.temperature, 1)
-sht_relative_humidity = round(sht.relative_humidity, 1)
-bmp_temperature,bmp_pressure,bmp_altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
-bmp_pressure = round((bmp_pressure/100.0), 2)
-ltr_uvi = round(ltr.uvi, 1)
-ltr_lux = round(ltr.lux, 1)
-
-# Put readings to an array to display
-overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue),
-                'Temp: ' + str(sht_temperature) + ' C', 
-                'Humidity: ' + str(sht_relative_humidity) + '%',
-                'Pressure: ' + str(bmp_pressure) + 'Pa',
-                'UV Index: ' + str(ltr_uvi),
-                'Lux: ' + str(ltr_lux)]
-
-                # uvs - The raw UV light measurement.
-                # light - The raw ambient light measurement.
-                # uvi - The calculated UV Index value.
-                # lux - The calculated Lux ambient light value.
+getSensorReadings()
 
 imageCount = 0
 
@@ -171,38 +209,17 @@ while True:
             cv2.polylines(img, [pts], True, (0, 255, 0), 3)
             cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 2)
 
-    # Update readings and round them
-    loadCellRawValue = round(read_raw_value()) * gain
-    sht_temperature = round(sht.temperature, 1)
-    sht_relative_humidity = round(sht.relative_humidity, 1)
-    bmp_temperature,bmp_pressure,bmp_altitude = bmp.bmp388.get_temperature_and_pressure_and_altitude()
-    bmp_pressure = round((bmp_pressure/100.0), 2)
-    ltr_uvi = round(ltr.uvi, 1)
-    ltr_lux = round(ltr.lux, 1)
-    
-    # uvs - The raw UV light measurement.
-    # light - The raw ambient light measurement.
-    # uvi - The calculated UV Index value.
-    # lux - The calculated Lux ambient light value.
+    getSensorReadings()
 
-    # Print the sensor readings to console
+    # Print the sensor readings to console for logging purposes
     print("=====")
 
-    print('NAU7802: Raw Value = ', loadCellRawValue)
+    print('NAU7802: Mass = ', loadCellMass)
 
-    print('SHT4X: Temperature = ', sht_temperature, 'Humidity = ', sht_relative_humidity)
-
-    print('BMP388: Pressure = ', bmp_pressure)
+    print('SHT4X: Temperature = ', sht_temperature, 'Humidity = ', sht_relative_humidity, '%')
 
     print('LTR390: UV Index = ', ltr.uvi, 'Lux = ', ltr_lux)
 
-    # update readings to an array
-    overlayArray = ['Load Cell Raw Value: ' + str(loadCellRawValue) + ' g',
-                    'Temp: ' + str(sht_temperature) + ' C', 
-                    'Humidity: ' + str(sht_relative_humidity) + '%',
-                    'Pressure: ' + str(bmp_pressure) + ' Pa',
-                    'UV Index: ' + str(ltr_uvi),
-                    'Lux: ' + str(ltr_lux)]
     # Display the array of data on the top left
     # frame = np.ones([400,400,3])*255
     offset = 35
@@ -221,16 +238,18 @@ while True:
 
 
 
+"""  
+    ** If we were using a headful system we would use this section **
+
     # Display the image
-    #cv2.imshow("image", img)
+    cv2.imshow("image", img)
 
     # waitKey(0) will display the window infinitely until any keypress (it is suitable for image display).
     # waitKey(1) will display a frame for 1 ms, after which display will be automatically closed.
-    #cv2.waitKey(1)
+    cv2.waitKey(1)
 
-    # time.sleep(1.0)
-
-
+"""
 
 
+# release the camera that we have initialized for our code
 cap.release()
