@@ -11,6 +11,36 @@ import cv2
 from pyzbar.pyzbar import decode
 import numpy as np
 import os 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import db
+import json
+
+
+""" Firebase setup """
+# Fetch the service account key JSON file contents
+cred = credentials.Certificate('ece-180-project-firebase-adminsdk-7eg04-74b6c29e0b.json')
+
+# Initialize the app with a service account, granting admin privileges
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://ece-180-project-default-rtdb.firebaseio.com/'
+})
+
+# Be sure to update this line for other scales
+# i.e. ref = db.reference("/Scale_2/")
+ref = db.reference("/Scale_1/")
+
+"""" update_firebase is an overloaded function! """
+# update_firebase(Container Name, Parameter to Update, Value to Update to)
+# Example usage update_firebase("Container_1","Current Mass",val) 
+# Note the container names have underscores while the parameters do not
+def update_firebase(container,parameter,updated_value):
+	ref.child(container).update({parameter:updated_value})
+
+# update_firebase(Parameter to Update, Value to Update to)
+# Example usage update_firebase("Scale UV",val) 
+def update_firebase(parameter,updated_value):
+	ref.update({parameter:updated_value})
 
 # define the variables that will store information, all are floats
 # NAU7802 (loadcell)
@@ -21,16 +51,16 @@ sht_temperature, sht_relative_humidity, \
 ltr_uvi, ltr_lux = 0.0
 
 # Put readings to an array to display
-overlayArray = ['Load Cell Raw Value: ' + str(loadCellMass),
+overlayArray = ['Load Cell Raw Value: ' + str(loadCellMass) + 'g',
                 'Temp: ' + str(sht_temperature) + ' C', 
                 'Humidity: ' + str(sht_relative_humidity) + '%',
                 'UV Index: ' + str(ltr_uvi),
                 'Lux: ' + str(ltr_lux)]
 
-# Get readings and round them accordingly, this updates the variables defined above
+# Get readings and round them accordingly, this updates the variables defined above and pushes them to Firebase
 def getSensorReadings():
     # get the raw value around to a whole number and multiply by gain
-    loadCellValue = round(read_raw_value()) * gain
+    loadCellMass = round(read_raw_value()) * gain
     # get the temperature (C) and round to one decimal
     sht_temperature = round(sht.temperature, 1)
     # get the humidity (%) and round to one decimal
@@ -40,21 +70,19 @@ def getSensorReadings():
     # get the LUX level and round to whole number
     ltr_lux = round(ltr.lux)
 
-    """ Notes on LUX level
-    Typical Lux
-    Direct Sunlight	32,000 to 100,000
-    Ambient Daylight	10,000 to 25,000
-    Overcast Daylight	1000
-    Sunset & Sunrise	400
-    Moonlight (Full moon)	1
-    Night (No moon)	< 0.01 """
-    # source https://greenbusinesslight.com/resources/lighting-lux-lumens-watts/
-
-    overlayArray = ['Load Cell Raw Value: ' + str(loadCellMass),
+    # update the overlay array
+    overlayArray = ['Load Cell Raw Value: ' + str(loadCellMass) + 'g',
                 'Temp: ' + str(sht_temperature) + ' C', 
                 'Humidity: ' + str(sht_relative_humidity) + '%',
                 'UV Index: ' + str(ltr_uvi),
-                'Lux: ' + str(ltr_lux)]
+                'LUX: ' + str(ltr_lux) + 'lx']
+    
+    # push these values to Firebase 
+    update_firebase("Scale Mass",loadCellMass) 
+    update_firebase("Scale Temperature", sht_temperature) 
+    update_firebase("Scale Humidity", sht_relative_humidity) 
+    update_firebase("Scale UV", ltr_uvi) 
+    update_firebase("Scale Lux", ltr_lux) 
 
 # this defines the container data structure which will store information we have on each container
 # containers will be identified via their numbers and their names can be adjusted in the web GUI
@@ -167,8 +195,6 @@ bmp.bmp388 = bmp.BMP388()
 print("BMP388 READY")
 
 sht = adafruit_sht4x.SHT4x(board.I2C())
-print("Found SHT4x with serial number", hex(sht.serial_number))
-print("Current mode is: ", adafruit_sht4x.Mode.string[sht.mode])
 print("SHT4X READY")
 
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -214,11 +240,11 @@ while True:
     # Print the sensor readings to console for logging purposes
     print("=====")
 
-    print('NAU7802: Mass = ', loadCellMass)
+    print('NAU7802: Mass = ' + str(loadCellMass) + 'g')
 
-    print('SHT4X: Temperature = ', sht_temperature, 'Humidity = ', sht_relative_humidity, '%')
+    print('SHT4X: Temperature = ' + str(sht_temperature) + 'C', 'Humidity = ' + str(sht_relative_humidity) + '%')
 
-    print('LTR390: UV Index = ', ltr.uvi, 'Lux = ', ltr_lux)
+    print('LTR390: UV Index = ' + str(ltr_uvi) + 'Lux = ' + str(ltr_lux))
 
     # Display the array of data on the top left
     # frame = np.ones([400,400,3])*255
@@ -233,9 +259,6 @@ while True:
     
     cv2.imwrite(os.path.join(path , filename), img)
     imageCount += 1
-
-
-
 
 
 """  

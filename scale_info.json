@@ -1,0 +1,63 @@
+{
+	"Scale_1":
+	{
+		"Scale Name": "Scale 1",
+		"Scale Mass": 0.0,
+		"Scale Temperature": 0.0,
+		"Scale Humidity": 0.0,
+		"Scale UV": 0.0,
+		"Scale Lux": 0.0,
+		"Container_1":
+		{
+			"Container Name": "Container_1",
+			"Initial Container Mass": 0.0,
+			"Current Container Mass": 0.0,
+			"Percentage Remaining": 0.0,
+			"Max Storage Temperature": 0.0,
+			"Max Storage Humidity": 0.0,
+			"Min Storage Temperature": 0.0,
+			"Min Storage Humidity": 0.0,
+			"Max Storage UV": 0.0,
+			"Max Storage Lux": 0.0
+		},
+		"Container_2":
+		{
+			"Container Name": "Container_2",
+			"Initial Container Mass": 0.0,
+			"Current Container Mass": 0.0,
+			"Percentage Remaining": 0.0,
+			"Max Storage Temperature": 0.0,
+			"Max Storage Humidity": 0.0,
+			"Min Storage Temperature": 0.0,
+			"Min Storage Humidity": 0.0,
+			"Max Storage UV": 0.0,
+			"Max Storage Lux": 0.0
+		},
+		"Container_3":
+		{
+			"Container Name": "Container_3",
+			"Initial Container Mass": 0.0,
+			"Current Container Mass": 0.0,
+			"Percentage Remaining": 0.0,
+			"Max Storage Temperature": 0.0,
+			"Max Storage Humidity": 0.0,
+			"Min Storage Temperature": 0.0,
+			"Min Storage Humidity": 0.0,
+			"Max Storage UV": 0.0,
+			"Max Storage Lux": 0.0
+		},
+		"Container_4":
+		{
+			"Container Name": "Container_4",
+			"Initial Container Mass": 0.0,
+			"Current Container Mass": 0.0,
+			"Percentage Remaining": 0.0,
+			"Max Storage Temperature": 0.0,
+			"Max Storage Humidity": 0.0,
+			"Min Storage Temperature": 0.0,
+			"Min Storage Humidity": 0.0,
+			"Max Storage UV": 0.0,
+			"Max Storage Lux": 0.0
+		}
+	}
+}
