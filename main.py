@@ -136,6 +136,9 @@ class container:
         r,g,b = red_color, green_color, 0
         return r,g,b
 
+# the dictionary to store containers
+containerDict = dict()
+
 def zero_channel():
     """Initiate internal calibration for current channel.Use when scale is started,
     a new channel is selected, or to adjust for measurement drift. Remove weight
@@ -243,11 +246,17 @@ while True:
     for code in decoded_list:
         # Get QR code contents
         decoded_data = code.data.decode("utf-8")
-        
+
+        if decoded_data in containerDict.keys():
+            print(decoded_data + " is present in the dictionary")
+        else:
+            print(decoded_data + " is not present in the dictionary")        
+
+
          # Get bounding QR code box
         rect_pts = code.rect
         # Print what is decoded from that QR code into console
-        print(decoded_data + " is present")
+        # print(decoded_data + " is present")
         # If info in QR code, display on screen in frame
         if decoded_data:
             # call color function
