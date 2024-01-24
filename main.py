@@ -36,18 +36,19 @@ ref = db.reference("/Scale_1/")
 def update_firebase(container, parameter, updated_value):
 	ref.child(container).update({parameter:updated_value})
 
-# update_firebase(Parameter to Update, Value to Update to)
-# Example usage update_firebase("Scale UV", val) 
-def update_firebase(parameter, updated_value):
-	ref.update({parameter:updated_value})
+# Pull the scale's gain from Firebase, returns a float
+def get_scale_gain():
+	return ref.child("Scale Gain").get()
 
 # define the variables that will store information, all are floats
 # NAU7802 (loadcell)
 # SHT40 (temp + humidity sensor)
 # LTR390 (UV + LUX sensor)
-loadCellMass, gain, \
-sht_temperature, sht_relative_humidity, \
+loadCellMass, gain, = 0.0
+sht_temperature, sht_relative_humidity = 0.0
 ltr_uvi, ltr_lux = 0.0
+# Keep track of the number of OpenCV frames we are storing
+imageCount = 1
 
 # Put readings to an array to display
 overlayArray = ['Load Cell Raw Value: ' + str(loadCellMass) + 'g',
@@ -82,6 +83,16 @@ def getSensorReadings():
     update_firebase("Scale Humidity", sht_relative_humidity) 
     update_firebase("Scale UV", ltr_uvi) 
     update_firebase("Scale Lux", ltr_lux) 
+
+    # Print the sensor readings to console for logging purposes
+    print("=====")
+
+    print('NAU7802: Mass = ' + str(loadCellMass) + 'g')
+
+    print('SHT4X: Temperature = ' + str(sht_temperature) + 'C', 'Humidity = ' + str(sht_relative_humidity) + '%')
+
+    print('LTR390: UV Index = ' + str(ltr_uvi) + 'Lux = ' + str(ltr_lux))
+
 
 # this defines the container data structure which will store information we have on each container
 # containers will be identified via their numbers and their names can be adjusted in the web GUI
@@ -161,8 +172,9 @@ def calibrate_weight_sensor():
     gain = item_weight / (item_weight_reading - empty_weight_reading)
 
     # Print the calibration parameters
-    print("Gain:", gain)
+    print("Scale Gain:", gain)
 
+    update_firebase("Scale Gain", gain)
     return gain
 
 # this defines the path that openCV frames will be stored to, this is used for debugging purposes
@@ -186,7 +198,10 @@ time.sleep(3)
 nau7802.channel = 1
 zero_channel()  # Calibrate and zero channel
 
-gain = calibrate_weight_sensor()
+# Check if we have a gain stored in Firebase, if not obtain a new one
+gain = get_scale_gain
+if(gain == 0.0):
+    gain = calibrate_weight_sensor()
 
 print("LOAD CELL READY")
 
@@ -202,9 +217,7 @@ print("LTR390 READY")
 
 getSensorReadings()
 
-imageCount = 0
-
-### Main loop: Read load cells and display raw values
+### Main loop
 while True:
 
     # If we can get video, read
@@ -212,9 +225,8 @@ while True:
 
     # If we can not get video, break
     if not success: 
+        print("Could not get video feed, exiting")
         break
-
-    # r,g,b = c1.color() ----> set this later?
 
     # Look for QR codes and add labels 
     for code in decode(img):
@@ -236,15 +248,6 @@ while True:
 
     getSensorReadings()
 
-    # Print the sensor readings to console for logging purposes
-    print("=====")
-
-    print('NAU7802: Mass = ' + str(loadCellMass) + 'g')
-
-    print('SHT4X: Temperature = ' + str(sht_temperature) + 'C', 'Humidity = ' + str(sht_relative_humidity) + '%')
-
-    print('LTR390: UV Index = ' + str(ltr_uvi) + 'Lux = ' + str(ltr_lux))
-
     # Display the array of data on the top left
     # frame = np.ones([400,400,3])*255
     offset = 35
@@ -252,10 +255,10 @@ while True:
     for idx,lbl in enumerate(overlayArray):
         cv2.putText(img, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,255,0), 2)
 
-    filename = 'savedImage' + str(imageCount) + '.jpg'
+    # Name the output file, we only keep the most recent 60 frames
+    filename = 'openCVOutput_' + str(imageCount) + '.jpg'
     if imageCount == 60:
         imageCount = 0
-    
     cv2.imwrite(os.path.join(path , filename), img)
     imageCount += 1
 
