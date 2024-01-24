@@ -249,10 +249,10 @@ while True:
 
         if decoded_data in containerDict.keys():
             print(decoded_data + " is present in the dictionary here is the information on that container:")
-            print ("Inital Mass = " + containerDict[decoded_data].initialMass)
-            print ("Current Mass = " + containerDict[decoded_data].currentMass)
-            print ("Percent Remaining = " + containerDict[decoded_data].precentage())
-            print ("Label RGB Code = " + containerDict[decoded_data].color())
+            print ("Inital Mass = " + str(containerDict[decoded_data].initialMass))
+            print ("Current Mass = " + str(containerDict[decoded_data].currentMass))
+            print ("Percent Remaining = " + str(containerDict[decoded_data].precentage()))
+            print ("Label RGB Code = " + str(containerDict[decoded_data].color()))
 
         else:
             print(decoded_data + " is not present in the dictionary, adding it now!")    
