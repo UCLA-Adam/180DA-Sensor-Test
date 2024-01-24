@@ -16,8 +16,7 @@ from firebase_admin import credentials
 from firebase_admin import db
 import json
 
-
-""" Firebase setup """
+"""DO NOT PUSH THIS FILE TO GITHUB, CONTAINS ACCESS TOKENS"""
 # Fetch the service account key JSON file contents
 cred = credentials.Certificate('ece-180-project-firebase-adminsdk-7eg04-74b6c29e0b.json')
 
@@ -32,14 +31,14 @@ ref = db.reference("/Scale_1/")
 
 """" update_firebase is an overloaded function! """
 # update_firebase(Container Name, Parameter to Update, Value to Update to)
-# Example usage update_firebase("Container_1","Current Mass",val) 
+# Example usage update_firebase("Container_1", "Current Mass", val) 
 # Note the container names have underscores while the parameters do not
-def update_firebase(container,parameter,updated_value):
+def update_firebase(container, parameter, updated_value):
 	ref.child(container).update({parameter:updated_value})
 
 # update_firebase(Parameter to Update, Value to Update to)
-# Example usage update_firebase("Scale UV",val) 
-def update_firebase(parameter,updated_value):
+# Example usage update_firebase("Scale UV", val) 
+def update_firebase(parameter, updated_value):
 	ref.update({parameter:updated_value})
 
 # define the variables that will store information, all are floats
