@@ -256,7 +256,7 @@ while True:
 
         else:
             print(decoded_data + " is not present in the dictionary, adding it now!")    
-            containerDict[decoded_data] = container(decoded_data, 0, 0)    
+            containerDict[decoded_data] = container(decoded_data, 10, 10)    
 
 
          # Get bounding QR code box
