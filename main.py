@@ -247,7 +247,7 @@ while True:
          # Get bounding QR code box
         rect_pts = code.rect
         # Print what is decoded from that QR code into console
-        print(decoded_data)
+        print(decoded_data + " is present")
         # If info in QR code, display on screen in frame
         if decoded_data:
             # call color function
