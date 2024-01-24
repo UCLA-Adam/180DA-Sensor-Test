@@ -20,7 +20,10 @@
 			"Min Storage Temperature": 0.0,
 			"Min Storage Humidity": 0.0,
 			"Max Storage UV": 0.0,
-			"Max Storage Lux": 0.0
+			"Max Storage Lux": 0.0,
+			"Color R": 0,
+			"Color G": 0,
+			"Color B": 0
 		},
 		"Container_2":
 		{
@@ -33,7 +36,10 @@
 			"Min Storage Temperature": 0.0,
 			"Min Storage Humidity": 0.0,
 			"Max Storage UV": 0.0,
-			"Max Storage Lux": 0.0
+			"Max Storage Lux": 0.0,
+			"Color R": 0,
+			"Color G": 0,
+			"Color B": 0
 		},
 		"Container_3":
 		{
@@ -46,7 +52,10 @@
 			"Min Storage Temperature": 0.0,
 			"Min Storage Humidity": 0.0,
 			"Max Storage UV": 0.0,
-			"Max Storage Lux": 0.0
+			"Max Storage Lux": 0.0,
+			"Color R": 0,
+			"Color G": 0,
+			"Color B": 0
 		},
 		"Container_4":
 		{
@@ -59,7 +68,10 @@
 			"Min Storage Temperature": 0.0,
 			"Min Storage Humidity": 0.0,
 			"Max Storage UV": 0.0,
-			"Max Storage Lux": 0.0
+			"Max Storage Lux": 0.0,
+			"Color R": 0,
+			"Color G": 0,
+			"Color B": 0
 		}
 	}
 }

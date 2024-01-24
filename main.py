@@ -120,22 +120,28 @@ class container:
         # initialMass >= currentMass >= 0
         thisContainer.currentMass = currentMass
     
-    # this function returns the precentage of product in the container as a string with the % symbol
+    # this function returns the percentage of product in the container as an int
     # the percentage is rounded to the nearest whole number
     def percentage(thisContainer):
-        return str(round(thisContainer.currentMass / thisContainer.initialMass * 100)) + '%'
+        if thisContainer.initalMass == 0: # handle the case where the container is not intialized yet 
+             return 0
+        return round(thisContainer.currentMass / thisContainer.initialMass * 100)
 
     # this function returns the RGB color values that correspond with how full or empty the container is
     # green = full, red = empty
     def labelColor(thisContainer):
-        pct  =  round(thisContainer.currentMass / thisContainer.initialMass * 100, 2)
-        pct_diff = 1.0 - pct
-        red_color = min(255, pct_diff*2 * 255)
-        green_color = min(255, pct*2 * 255)
-        col = (red_color, green_color, 0)
-        r,g,b = red_color, green_color, 0
+        percent  =  round(thisContainer.currentMass / thisContainer.initialMass * 100, 2)
+        if (percent >= 66.0):
+            r,g,b = 0,255,0
+        elif (percent >= 33.00):
+            r,g,b = 255,255,0
+        else:
+            r,g,b = 255,0,0
+        update_firebase_container(thisContainer.qr, "Color R", r)
+        update_firebase_container(thisContainer.qr, "Color G", g)
+        update_firebase_container(thisContainer.qr, "Color B", b)
         return r,g,b
-
+    
 # the dictionary to store containers
 containerDict = dict()
 
@@ -248,15 +254,23 @@ while True:
         decoded_data = code.data.decode("utf-8")
 
         if decoded_data in containerDict.keys():
-            print(decoded_data + " is present in the dictionary here is the information on that container:")
+            # To do, calculate the difference in mass for that container 
+            print(decoded_data + " is present, here is the information on that container:")
             print ("Inital Mass = " + str(containerDict[decoded_data].initialMass))
             print ("Current Mass = " + str(containerDict[decoded_data].currentMass))
-            print ("Percent Remaining = " + str(containerDict[decoded_data].percentage()))
+            print ("Percent Remaining = " + str(containerDict[decoded_data].percentage()) + "%")
             print ("Label RGB Code = " + str(containerDict[decoded_data].labelColor()))
 
+            update_firebase_container(decoded_data, "Current Container Mass", containerDict[decoded_data].currentMass)
+            update_firebase_container(decoded_data, "Percentage Remaining", containerDict[decoded_data].percentage())
+
         else:
-            print(decoded_data + " is not present in the dictionary, adding it now!")    
+            print(decoded_data + " is new, adding it now!")    
             containerDict[decoded_data] = container(decoded_data, 10, 10)    
+            # To do, record the inital mass of that container 
+            update_firebase_container(decoded_data, "Initial Container Mass", containerDict[decoded_data].initialMass)
+            update_firebase_container(decoded_data, "Current Container Mass", containerDict[decoded_data].currentMass)
+            update_firebase_container(decoded_data, "Percentage Remaining", containerDict[decoded_data].percentage())
 
 
          # Get bounding QR code box
