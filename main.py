@@ -234,7 +234,7 @@ while True:
 
     # If we can not get video, break
     if not success: 
-        print("Could not get video feed, exiting")
+        print("Could not get video feed, quitting")
         break
 
     # Look for QR codes and add labels 
@@ -254,6 +254,8 @@ while True:
             pts = np.array([code.polygon], np.int32)
             cv2.polylines(img, [pts], True, (0, 255, 0), 3)
             cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 2)
+
+    update_firebase_scale("Scale Containers Present", decode(img).length())
 
     getSensorReadings()
 

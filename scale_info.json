@@ -8,6 +8,7 @@
 		"Scale UV": 0.0,
 		"Scale Lux": 0.0,
 		"Scale Gain": 0.0,
+		"Scale Containers Present": 0,
 		"Container_1":
 		{
 			"Container Name": "Container_1",
