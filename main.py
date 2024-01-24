@@ -16,6 +16,8 @@ from firebase_admin import credentials
 from firebase_admin import db
 import json
 
+degree_sign = u'\N{DEGREE SIGN}'
+
 """DO NOT PUSH THIS FILE TO GITHUB, CONTAINS ACCESS TOKENS"""
 # Fetch the service account key JSON file contents
 cred = credentials.Certificate('ece-180-project-firebase-adminsdk-7eg04-74b6c29e0b.json')
@@ -78,7 +80,7 @@ def getSensorReadings():
 
     # update the overlay array
     overlayArray = ['Load Cell Raw Value: ' + str(loadCellMass) + 'g',
-                'Temp: ' + str(sht_temperature) + ' C', 
+                'Temp: ' + str(sht_temperature) + ' ' + degree_sign +'C', 
                 'Humidity: ' + str(sht_relative_humidity) + '%',
                 'UV Index: ' + str(ltr_uvi),
                 'LUX: ' + str(ltr_lux) + 'lx']
@@ -95,9 +97,9 @@ def getSensorReadings():
 
     print('NAU7802: Mass = ' + str(loadCellMass) + 'g')
 
-    print('SHT4X: Temperature = ' + str(sht_temperature) + 'C', 'Humidity = ' + str(sht_relative_humidity) + '%')
+    print('SHT4X: Temperature = ' + str(sht_temperature) + degree_sign + 'C, Humidity = ' + str(sht_relative_humidity) + '%')
 
-    print('LTR390: UV Index = ' + str(ltr_uvi) + 'Lux = ' + str(ltr_lux))
+    print('LTR390: UV Index = ' + str(ltr_uvi) + ', Lux = ' + str(ltr_lux))
 
 
 # this defines the container data structure which will store information we have on each container
