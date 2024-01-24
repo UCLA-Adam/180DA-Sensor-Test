@@ -66,7 +66,7 @@ overlayArray = ['Load Cell Raw Value: ' + str(loadCellMass) + 'g',
 # Get readings and round them accordingly, this updates the variables defined above and pushes them to Firebase
 def getSensorReadings():
     # get the raw value around to a whole number and multiply by gain
-    loadCellMass = round(read_raw_value(), 1) * gain
+    loadCellMass = round(read_raw_value() * gain, 1)
     if loadCellMass < 0.0:
          loadCellMass = 0.0
     # get the temperature (C) and round to one decimal
