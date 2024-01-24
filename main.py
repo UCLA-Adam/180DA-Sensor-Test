@@ -30,11 +30,15 @@ firebase_admin.initialize_app(cred, {
 ref = db.reference("/Scale_1/")
 
 """" update_firebase is an overloaded function! """
-# update_firebase(Container Name, Parameter to Update, Value to Update to)
-# Example usage update_firebase("Container_1", "Current Mass", val) 
+# update_firebase_container(Container Name, Parameter to Update, Value to Update to)
+# Example usage update_firebase_container("Container_1", "Current Mass", val) 
 # Note the container names have underscores while the parameters do not
-def update_firebase(container, parameter, updated_value):
+def update_firebase_container(container, parameter, updated_value):
 	ref.child(container).update({parameter:updated_value})
+# update_firebase(Parameter to Update, Value to Update to)
+# Example usage update_firebase_scale("Scale UV", val) 
+def update_firebase_scale(parameter, updated_value):
+	ref.update({parameter:updated_value})
 
 # Pull the scale's gain from Firebase, returns a float
 def get_scale_gain():
@@ -78,11 +82,11 @@ def getSensorReadings():
                 'LUX: ' + str(ltr_lux) + 'lx']
     
     # push these values to Firebase 
-    update_firebase("Scale Mass",loadCellMass) 
-    update_firebase("Scale Temperature", sht_temperature) 
-    update_firebase("Scale Humidity", sht_relative_humidity) 
-    update_firebase("Scale UV", ltr_uvi) 
-    update_firebase("Scale Lux", ltr_lux) 
+    update_firebase_scale("Scale Mass",loadCellMass) 
+    update_firebase_scale("Scale Temperature", sht_temperature) 
+    update_firebase_scale("Scale Humidity", sht_relative_humidity) 
+    update_firebase_scale("Scale UV", ltr_uvi) 
+    update_firebase_scale("Scale Lux", ltr_lux) 
 
     # Print the sensor readings to console for logging purposes
     print("=====")
@@ -163,6 +167,7 @@ def calibrate_weight_sensor():
     empty_weight_reading = read_raw_value(10)
 
     # Prompt the user to enter the weight in grams of the item they place on the scale
+    print("Now place the item on the scale.")
     item_weight = float(input("Enter the weight of the item in grams: "))
 
     # Read the value of the sensor with the item on it
@@ -174,7 +179,7 @@ def calibrate_weight_sensor():
     # Print the calibration parameters
     print("Scale Gain:", gain)
 
-    update_firebase("Scale Gain", gain)
+    update_firebase_scale("Scale Gain", gain)
     return gain
 
 # this defines the path that openCV frames will be stored to, this is used for debugging purposes
