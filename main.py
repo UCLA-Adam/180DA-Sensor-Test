@@ -248,9 +248,15 @@ while True:
         decoded_data = code.data.decode("utf-8")
 
         if decoded_data in containerDict.keys():
-            print(decoded_data + " is present in the dictionary")
+            print(decoded_data + " is present in the dictionary here is the information on that container:")
+            print ("Inital Mass = " + containerDict[decoded_data].initialMass)
+            print ("Current Mass = " + containerDict[decoded_data].currentMass)
+            print ("Percent Remaining = " + containerDict[decoded_data].precentage())
+            print ("Label RGB Code = " + containerDict[decoded_data].color())
+
         else:
-            print(decoded_data + " is not present in the dictionary")        
+            print(decoded_data + " is not present in the dictionary, adding it now!")    
+            containerDict[decoded_data] = container(decoded_data, 0, 0)    
 
 
          # Get bounding QR code box
