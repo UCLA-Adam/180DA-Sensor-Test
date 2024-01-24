@@ -237,6 +237,7 @@ while True:
         print("Could not get video feed, quitting")
         break
 
+
     # Look for QR codes and add labels 
     for code in decode(img):
         # Get QR code contents
@@ -255,7 +256,8 @@ while True:
             cv2.polylines(img, [pts], True, (0, 255, 0), 3)
             cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 2)
 
-    update_firebase_scale("Scale Containers Present", decode(img).length())
+    # Update Firebase with the number of containers present
+    update_firebase_scale("Scale Containers Present", len(decode(img)))
 
     getSensorReadings()
 
