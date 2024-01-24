@@ -251,7 +251,7 @@ while True:
             print(decoded_data + " is present in the dictionary here is the information on that container:")
             print ("Inital Mass = " + str(containerDict[decoded_data].initialMass))
             print ("Current Mass = " + str(containerDict[decoded_data].currentMass))
-            print ("Percent Remaining = " + str(containerDict[decoded_data].precentage()))
+            print ("Percent Remaining = " + str(containerDict[decoded_data].percentage()))
             print ("Label RGB Code = " + str(containerDict[decoded_data].color()))
 
         else:
