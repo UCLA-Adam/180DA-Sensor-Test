@@ -57,59 +57,10 @@ overlayArray = ['Load Cell Raw Value: ' + str(loadCellMass) + 'g',
                 'UV Index: ' + str(ltr_uvi),
                 'Lux: ' + str(ltr_lux)]
 
-def zero_channel():
-    """Initiate internal calibration for current channel.Use when scale is started,
-    a new channel is selected, or to adjust for measurement drift. Remove weight
-    and tare from load cell before executing."""
-    print(
-        "channel %1d calibrate.INTERNAL: %5s"
-        % (nau7802.channel, nau7802.calibrate("INTERNAL"))
-    )
-    print(
-        "channel %1d calibrate.OFFSET:   %5s"
-        % (nau7802.channel, nau7802.calibrate("OFFSET"))
-    )
-    print("...channel %1d zeroed" % nau7802.channel)
-
-# Read and average consecutive raw sample values from the scale. Return average raw value.
-def read_raw_value(samples=5):
-    sample_sum = 0
-    sample_count = samples
-    while sample_count > 0:
-        while not nau7802.available():
-            pass
-        sample_sum = sample_sum + nau7802.read()
-        sample_count -= 1
-    return int(sample_sum / samples)
-
-# Returns a gain value, we will store this and multiply read_raw_value's output to get the mass in grams 
-def calibrate_weight_sensor():
-    # Prompt the user to press enter when the sensor is empty
-    print("Press enter when the sensor is empty.")
-    input()
-
-    # Read the value of the sensor when empty
-    empty_weight_reading = read_raw_value(10)
-
-    # Prompt the user to enter the weight in grams of the item they place on the scale
-    item_weight = float(input("Enter the weight of the item in grams: "))
-
-    # Read the value of the sensor with the item on it
-    item_weight_reading = read_raw_value()
-
-    # Calculate the calibration parameters
-    gain = item_weight / (item_weight_reading - empty_weight_reading)
-
-    # Print the calibration parameters
-    print("Scale Gain:", gain)
-
-    update_firebase("Scale Gain", gain)
-    return gain
-
 # Get readings and round them accordingly, this updates the variables defined above and pushes them to Firebase
 def getSensorReadings():
     # get the raw value around to a whole number and multiply by gain
-    loadCellMass = read_raw_value() * gain
+    loadCellMass = round(read_raw_value()) * gain
     # get the temperature (C) and round to one decimal
     sht_temperature = round(sht.temperature, 1)
     # get the humidity (%) and round to one decimal
@@ -177,6 +128,54 @@ class container:
         r,g,b = red_color, green_color, 0
         return r,g,b
 
+def zero_channel():
+    """Initiate internal calibration for current channel.Use when scale is started,
+    a new channel is selected, or to adjust for measurement drift. Remove weight
+    and tare from load cell before executing."""
+    print(
+        "channel %1d calibrate.INTERNAL: %5s"
+        % (nau7802.channel, nau7802.calibrate("INTERNAL"))
+    )
+    print(
+        "channel %1d calibrate.OFFSET:   %5s"
+        % (nau7802.channel, nau7802.calibrate("OFFSET"))
+    )
+    print("...channel %1d zeroed" % nau7802.channel)
+
+def read_raw_value(samples=5):
+    """Read and average consecutive raw sample values. Return average raw value."""
+    sample_sum = 0
+    sample_count = samples
+    while sample_count > 0:
+        while not nau7802.available():
+            pass
+        sample_sum = sample_sum + nau7802.read()
+        sample_count -= 1
+    return int(sample_sum / samples)
+
+# Returns a gain value, we will store this and multiply read_raw_value's output to get the mass in grams 
+def calibrate_weight_sensor():
+    # Prompt the user to press enter when the sensor is empty
+    print("Press enter when the sensor is empty.")
+    input()
+
+    # Read the value of the sensor when empty
+    empty_weight_reading = read_raw_value(10)
+
+    # Prompt the user to enter the weight in grams of the item they place on the scale
+    item_weight = float(input("Enter the weight of the item in grams: "))
+
+    # Read the value of the sensor with the item on it
+    item_weight_reading = read_raw_value()
+
+    # Calculate the calibration parameters
+    gain = item_weight / (item_weight_reading - empty_weight_reading)
+
+    # Print the calibration parameters
+    print("Scale Gain:", gain)
+
+    update_firebase("Scale Gain", gain)
+    return gain
 
 # this defines the path that openCV frames will be stored to, this is used for debugging purposes
 path = './OpenCVImages'
