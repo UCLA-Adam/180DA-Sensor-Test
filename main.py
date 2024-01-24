@@ -252,7 +252,7 @@ while True:
             print ("Inital Mass = " + str(containerDict[decoded_data].initialMass))
             print ("Current Mass = " + str(containerDict[decoded_data].currentMass))
             print ("Percent Remaining = " + str(containerDict[decoded_data].percentage()))
-            print ("Label RGB Code = " + str(containerDict[decoded_data].color()))
+            print ("Label RGB Code = " + str(containerDict[decoded_data].labelColor()))
 
         else:
             print(decoded_data + " is not present in the dictionary, adding it now!")    
