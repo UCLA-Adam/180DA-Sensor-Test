@@ -60,7 +60,7 @@ overlayArray = ['Load Cell Raw Value: ' + str(loadCellMass) + 'g',
 # Get readings and round them accordingly, this updates the variables defined above and pushes them to Firebase
 def getSensorReadings():
     # get the raw value around to a whole number and multiply by gain
-    loadCellMass = round(read_raw_value()) * 3.0
+    loadCellMass = round(read_raw_value()) * gain
     # get the temperature (C) and round to one decimal
     sht_temperature = round(sht.temperature, 1)
     # get the humidity (%) and round to one decimal
@@ -199,7 +199,7 @@ nau7802.channel = 1
 zero_channel()  # Calibrate and zero channel
 
 # Check if we have a gain stored in Firebase, if not obtain a new one
-gain = get_scale_gain
+gain = get_scale_gain()
 if(gain == 0.0):
     gain = calibrate_weight_sensor()
 
