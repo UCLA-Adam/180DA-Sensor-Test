@@ -44,9 +44,9 @@ def get_scale_gain():
 # NAU7802 (loadcell)
 # SHT40 (temp + humidity sensor)
 # LTR390 (UV + LUX sensor)
-loadCellMass, gain = 0.0
-sht_temperature, sht_relative_humidity = 0.0
-ltr_uvi, ltr_lux = 0.0
+loadCellMass = gain = 0.0
+sht_temperature = sht_relative_humidity = 0.0
+ltr_uvi = ltr_lux = 0.0
 # Keep track of the number of OpenCV frames we are storing
 imageCount = 1
 
