@@ -239,7 +239,8 @@ while True:
 
 
     # Look for QR codes and add labels 
-    for code in decode(img):
+    decoded_list = decode(img)
+    for code in decoded_list:
         # Get QR code contents
         decoded_data = code.data.decode("utf-8")
         
@@ -257,7 +258,7 @@ while True:
             cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 2)
 
     # Update Firebase with the number of containers present
-    update_firebase_scale("Scale Containers Present", len(decode(img)))
+    update_firebase_scale("Scale Containers Present", len(decoded_list))
 
     getSensorReadings()
 
