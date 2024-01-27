@@ -371,10 +371,10 @@ while True:
     # CASE 3:  NO SIGNIFICANT CHANGE IN MASS
     else:
         print("No significant change in mass.")
-        # Remove the oldest mass from prevMasses
-        prevMasses.pop()
-        # Put in front of prevMasses the newest mass
-        prevMasses.insert(0, loadCellMass)
+        # Remove the oldest mass from prevMasses (which is in front)
+        prevMasses.remove(0)
+        # Put in the back of prevMasses the newest mass
+        prevMasses.append(loadCellMass)
 
 # release the camera that we have initialized for our code
 cap.release()
