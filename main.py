@@ -364,6 +364,7 @@ while True:
 
         # If we happened to add more than the initial amount this is now the initial amount
         if containerDict[newContainer].currentMass > containerDict[newContainer].initialMass:
+            print("We have more product now, updating inital mass.")
             containerDict[newContainer].updateInitialMass(containerDict[newContainer].currentMass)
 
         # Make all the prevMasses the current mass so the next iteration doesn't think there was a change
