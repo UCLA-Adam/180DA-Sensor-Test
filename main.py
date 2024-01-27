@@ -17,10 +17,11 @@ from firebase_admin import db
 import json
 
 degree_sign = u'\N{DEGREE SIGN}'
+container_mass = 39.5 # units are grams, +/-1 gram 
 
-"""DO NOT PUSH THIS FILE TO GITHUB, CONTAINS ACCESS TOKENS"""
 # Fetch the service account key JSON file contents
 cred = credentials.Certificate('ece-180-project-firebase-adminsdk-7eg04-74b6c29e0b.json')
+"""                             ^ DO NOT PUSH THIS JSON FILE TO GITHUB, CONTAINS ACCESS TOKENS"""
 
 # Initialize the app with a service account, granting admin privileges
 firebase_admin.initialize_app(cred, {
@@ -31,7 +32,6 @@ firebase_admin.initialize_app(cred, {
 # i.e. ref = db.reference("/Scale_2/")
 ref = db.reference("/Scale_1/")
 
-"""" update_firebase is an overloaded function! """
 # update_firebase_container(Container Name, Parameter to Update, Value to Update to)
 # Example usage update_firebase_container("Container_1", "Current Mass", val) 
 # Note the container names have underscores while the parameters do not
@@ -137,13 +137,12 @@ class container:
             r,g,b = 255,255,0
         else:
             r,g,b = 255,0,0
-        update_firebase_container(thisContainer.qr, "Color R", r)
-        update_firebase_container(thisContainer.qr, "Color G", g)
-        update_firebase_container(thisContainer.qr, "Color B", b)
         return r,g,b
     
 # the dictionary to store containers
 containerDict = dict()
+
+""" Write code to pull dictionary from the """
 
 def zero_channel():
     """Initiate internal calibration for current channel.Use when scale is started,
