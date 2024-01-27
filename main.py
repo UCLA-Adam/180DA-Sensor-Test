@@ -111,15 +111,15 @@ def getSensorReadings():
 # this defines the container data structure which will store information we have on each container
 # containers will be identified via their numbers and their names can be adjusted in the web GUI
 class container:
-    def __init__(thisContainer, qr, initalMass, currentMass):
+    def __init__(thisContainer, qr, initialMass, currentMass):
         # qr is an int, ranging from 1 - 4 as this project will only have at most 4 containers 
         # the qr codes should only store int values
         thisContainer.qr = qr
         
-        # initialMass is an int >= 0 representing the container's inital mass
+        # initialMass is an int >= 0 representing the container's initial mass
         # we will subtract out the known mass of the containers so that this value only reflects
         # the mass of the contents
-        thisContainer.initialMass = initalMass
+        thisContainer.initialMass = initialMass
 
         # currentMass is an int >= 0 representing the amount of product left in the container
         # this value should always be within the following range 
@@ -129,7 +129,7 @@ class container:
     # this function returns the percentage of product in the container as an int
     # the percentage is rounded to the nearest whole number
     def updatePercentage(thisContainer):
-        if thisContainer.initalMass == 0: # handle the edge case
+        if thisContainer.initialMass == 0: # handle the edge case
              returnVal = 0
         returnVal = round(thisContainer.currentMass / thisContainer.initialMass * 100)
         update_firebase_container(thisContainer.qr,"Percentage Remaining", returnVal)
@@ -142,9 +142,9 @@ class container:
         update_firebase_container(thisContainer.qr,"Current Container Mass", newMass)
         thisContainer.updatePercentage()
 
-    # this function updates the inital mass locally and in Firebase, it accepts an int
+    # this function updates the initial mass locally and in Firebase, it accepts an int
     # updates the % in Firebase also!
-    def updateInitalMass(thisContainer, newMass):
+    def updateInitialMass(thisContainer, newMass):
         thisContainer.initialMass = newMass
         update_firebase_container(thisContainer.qr,"Inital Container Mass", newMass)
         thisContainer.updatePercentage()
@@ -358,9 +358,9 @@ while True:
         # Update the current mass of the container locally and in Firebase
         containerDict[newContainer].updateCurrentMass(loadCellMass - avgOfPrevMasses)
 
-        # If we happened to add more than the initial amount this is now the inital amount
-        if containerDict[newContainer].currentMass > containerDict[newContainer].initalMass:
-            containerDict[newContainer].updateInitalMass(containerDict[newContainer].currentMass)
+        # If we happened to add more than the initial amount this is now the initial amount
+        if containerDict[newContainer].currentMass > containerDict[newContainer].initialMass:
+            containerDict[newContainer].updateInitialMass(containerDict[newContainer].currentMass)
 
         # Make all the prevMasses the current mass so the next iteration doesn't think there was a change
         prevMasses = [loadCellMass, loadCellMass, loadCellMass, loadCellMass, loadCellMass]
@@ -396,7 +396,7 @@ cap.release()
     #     if decoded_data in containerDict.keys():
     #         # To do, calculate the difference in mass for that container 
     #         print(decoded_data + " is present, here is the information on that container:")
-    #         print ("Inital Mass = " + str(containerDict[decoded_data].initialMass))
+    #         print ("initial Mass = " + str(containerDict[decoded_data].initialMass))
     #         print ("Current Mass = " + str(containerDict[decoded_data].currentMass))
     #         print ("Percent Remaining = " + str(containerDict[decoded_data].percentage()) + "%")
     #         print ("Label RGB Code = " + str(containerDict[decoded_data].labelColor()))
@@ -407,7 +407,7 @@ cap.release()
     #     else:
     #         print(decoded_data + " is new, adding it now!")    
     #         containerDict[decoded_data] = container(decoded_data, 10, 10)    
-    #         # To do, record the inital mass of that container 
+    #         # To do, record the initial mass of that container 
     #         update_firebase_container(decoded_data, "Initial Container Mass", containerDict[decoded_data].initialMass)
     #         update_firebase_container(decoded_data, "Current Container Mass", containerDict[decoded_data].currentMass)
     #         update_firebase_container(decoded_data, "Percentage Remaining", containerDict[decoded_data].percentage())
