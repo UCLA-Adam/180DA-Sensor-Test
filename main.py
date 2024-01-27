@@ -139,16 +139,13 @@ class container:
     # this function updates the current mass locally and in Firebase, it accepts an int 
     # updates the % in Firebase also!
     def updateCurrentMass(thisContainer, newMass):
-        thisContainer.currentMassMass = newMass
+        thisContainer.currentMass = newMass
         update_firebase_container(thisContainer.qr,"Current Container Mass", newMass)
+        if thisContainer.currentMass > thisContainer.initialMass:
+            thisContainer.initialMass = thisContainer.currentMass
+            update_firebase_container(thisContainer.qr,"Initial Container Mass", newMass)
         thisContainer.updatePercentage()
 
-    # this function updates the initial mass locally and in Firebase, it accepts an int
-    # updates the % in Firebase also!
-    def updateInitialMass(thisContainer, newMass):
-        thisContainer.initialMass = newMass
-        update_firebase_container(thisContainer.qr,"Inital Container Mass", newMass)
-        thisContainer.updatePercentage()
 
 
 # the dictionary to store containers
@@ -361,11 +358,6 @@ while True:
 
         # Update the current mass of the container locally and in Firebase
         containerDict[newContainer].updateCurrentMass(loadCellMass - avgOfPrevMasses)
-
-        # If we happened to add more than the initial amount this is now the initial amount
-        if containerDict[newContainer].currentMass > containerDict[newContainer].initialMass:
-            print("We have more product now, updating inital mass.")
-            containerDict[newContainer].updateInitialMass(containerDict[newContainer].currentMass)
 
         # Make all the prevMasses the current mass so the next iteration doesn't think there was a change
         prevMasses = [loadCellMass, loadCellMass, loadCellMass, loadCellMass, loadCellMass]
