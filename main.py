@@ -278,10 +278,10 @@ def findNewContainer(): # Returns a string with the name of the new container
                 # If it is in the dictionary, check if it was previously there
                 if presentContainers[decoded_data] == False:
                     # If that is the case, return the container's name
-                    print("Success! Found " + decoded_data + " in " + count + " iterations!")
+                    print("Success! Found " + decoded_data + " in " + str(count) + " iterations!")
                     return decoded_data
         # If we don't find it let's keep trying
-        print("Could not find the container in iteration: " + count + " searching again")
+        print("Could not find the container in iteration: " + str(count) + " searching again")
         count += 1
 
 """ Find the container that was removed """
@@ -318,7 +318,7 @@ def findRemovedContainer(): # Returns a string with the name of the container th
                 candidates.remove(decoded_data)
                 print(decoded_data + " is still here.")
         # If we don't find it let's keep trying
-        print("Could not find the container in iteration: " + count + " searching again")
+        print("Could not find the container in iteration: " + str(count) + " searching again")
         count += 1
     # If we find that all the containers are still present
     if len(candidates) == 0:
