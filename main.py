@@ -300,7 +300,7 @@ def findRemovedContainer(): # Returns a string with the name of the container th
     for key, value in presentContainers.items():
         if value == True:
             candidates.append(key)
-    print("Candidates containers: ")
+    print("Candidate containers: ")
     print(' '.join(candidates))
         
     # For debugging purposes we will keep track of how long it takes to find the container
@@ -325,6 +325,8 @@ def findRemovedContainer(): # Returns a string with the name of the container th
                 print(decoded_data + " is still here.")
         # If we don't find it let's keep trying
         print("Could not find the container in iteration: " + str(count) + " searching again")
+        print("Remaining Candidates: ")
+        print(' '.join(candidates))
         count += 1
     # If we find that all the containers are still present
     if len(candidates) == 0:
