@@ -65,6 +65,12 @@ overlayArray = ['Load Cell Raw Value: ' + str(loadCellMass) + 'g',
 
 # Get readings and round them accordingly, this updates the variables defined above and pushes them to Firebase
 def getSensorReadings():
+    global loadCellMass
+    global sht_temperature
+    global sht_relative_humidity
+    global ltr_uvi
+    global ltr_lux
+    global overlayArray
     # get the raw value around to a whole number and multiply by gain
     loadCellMass = round(read_raw_value() * gain, 1)
     if loadCellMass < 0.0:
@@ -180,6 +186,7 @@ def read_raw_value(samples=5):
 
 # Returns a gain value, we will store this and multiply read_raw_value's output to get the mass in grams 
 def calibrate_weight_sensor():
+    global gain
     # Prompt the user to press enter when the sensor is empty
     print("Press enter when the sensor is empty.")
     input()
@@ -199,9 +206,7 @@ def calibrate_weight_sensor():
 
     # Print the calibration parameters
     print("Scale Gain:", gain)
-
     update_firebase_scale("Scale Gain", gain)
-    return gain
 
 # this defines the path that openCV frames will be stored to, this is used for debugging purposes
 path = './OpenCVImages'
@@ -227,7 +232,7 @@ zero_channel()  # Calibrate and zero channel
 # Check if we have a gain stored in Firebase, if not obtain a new one
 gain = get_scale_gain()
 if(gain == 0.0):
-    gain = calibrate_weight_sensor()
+    calibrate_weight_sensor()
 
 print("LOAD CELL READY")
 
@@ -333,9 +338,10 @@ while True:
 
     getSensorReadings()
     avgOfPrevMasses = sum(prevMasses) / len(prevMasses)
+    print("The average of the last 5 readings is : " + str(avgOfPrevMasses))
+
     differenceInMass = loadCellMass - avgOfPrevMasses
 
-    print("The average of the last 5 readings is : " + str(avgOfPrevMasses))
     print("The difference in mass from the average is: " + str(differenceInMass))
 
     # CASE 1: INCREASE IN MASS
