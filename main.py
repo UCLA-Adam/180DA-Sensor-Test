@@ -359,7 +359,7 @@ while True:
         prevMasses = [loadCellMass, loadCellMass, loadCellMass, loadCellMass, loadCellMass]
 
     # CASE 2: DECREASE IN MASS
-    elif (differenceInMass < containerMass):
+    elif (abs(differenceInMass) > containerMass):
         # Find the container that was removed
         removedContainer = findRemovedContainer()
         # Mark it as not present in our presentContainers dictionary
