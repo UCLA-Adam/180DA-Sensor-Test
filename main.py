@@ -335,6 +335,8 @@ while True:
     avgOfPrevMasses = sum(prevMasses) / len(prevMasses)
     differenceInMass = loadCellMass - avgOfPrevMasses
 
+    print("The average of the last 5 readings is : " + str(avgOfPrevMasses))
+
     # CASE 1: INCREASE IN MASS
     if (differenceInMass > containerMass):
         # Find the new container
