@@ -306,28 +306,29 @@ def findRemovedContainer(): # Returns a string with the name of the container th
     # For debugging purposes we will keep track of how long it takes to find the container
     count = 1
     # As long as we have more than one candidate in the list continue
-    while (len(candidates) != 1) and (len(candidates) != 0):
+    while (len(candidates) > 1):
         # Get an image from the webcam
         success, img = cap.read()
         # If we can not get an image terminate the program
         if not success: 
             print("Could not get video feed, quitting")
             exit()
-        # Read all the QR codes present in the frame
-        decoded_list = decode(img)
+            
         # Iterate through all the QR codes
-        for code in decoded_list:
+        for code in decode(img):
             # Get QR code contents
             decoded_data = code.data.decode("utf-8")
             # Check if it is in our list of candidates
             if decoded_data in candidates:
                 candidates.remove(decoded_data)
                 print(decoded_data + " is still here.")
+
         # If we don't find it let's keep trying
-        print("Could not find the container in iteration: " + str(count) + " searching again")
-        print("Remaining Candidates: ")
-        print(' '.join(candidates))
-        count += 1
+        if (len(candidates) > 1):
+            print("Could not find the container in iteration: " + str(count) + " searching again")
+            print("Remaining Candidates: ")
+            print(' '.join(candidates))
+            count += 1
     # If we find that all the containers are still present
     if len(candidates) == 0:
         print("That's odd, all the containers are still here.")
