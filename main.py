@@ -291,7 +291,7 @@ def findRemovedContainer(): # Returns a string with the name of the container th
     # i.e. The candidates list must be reduced to one element 
     candidates = []
     # Populate the canidates list, with containers that were present on the scale before change in mass
-    for key, value in presentContainers:
+    for key, value in presentContainers.items():
         if value == True:
             candidates.append(key)
     print("Candidates containers: ")
