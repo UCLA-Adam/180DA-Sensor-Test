@@ -371,7 +371,7 @@ while True:
     # CASE 2: DECREASE IN MASS
     elif (abs(differenceInMass) > containerMass):
         # wait one second so the QR is out of the frame 
-        time.sleep(1)
+        time.sleep(2)
         # Find the container that was removed
         removedContainer = findRemovedContainer()
         # Mark it as not present in our presentContainers dictionary
