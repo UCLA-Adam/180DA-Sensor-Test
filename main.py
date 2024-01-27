@@ -347,11 +347,11 @@ while True:
 
     getSensorReadings()
     avgOfPrevMasses = sum(prevMasses) / len(prevMasses)
-    print("The average of the last 5 readings is : " + str(avgOfPrevMasses))
+    # print("The average of the last 5 readings is : " + str(avgOfPrevMasses))
 
     differenceInMass = loadCellMass - avgOfPrevMasses
 
-    print("The difference in mass from the average is: " + str(differenceInMass))
+    # print("The difference in mass from the average is: " + str(differenceInMass))
 
     # CASE 1: INCREASE IN MASS
     if (differenceInMass > containerMass):
@@ -373,7 +373,7 @@ while True:
     # CASE 2: DECREASE IN MASS
     elif (abs(differenceInMass) > containerMass):
         # wait one second so the QR is out of the frame 
-        time.sleep(2)
+        time.sleep(1)
         # Find the container that was removed
         removedContainer = findRemovedContainer()
         # Mark it as not present in our presentContainers dictionary
@@ -384,7 +384,7 @@ while True:
 
     # CASE 3:  NO SIGNIFICANT CHANGE IN MASS
     else:
-        print("No significant change in mass.")
+        # print("No significant change in mass.")
         # Remove the oldest mass from prevMasses (which is in front)
         prevMasses.pop(0)
         # Put in the back of prevMasses the newest mass
