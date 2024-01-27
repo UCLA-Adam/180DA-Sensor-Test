@@ -306,7 +306,7 @@ def findRemovedContainer(): # Returns a string with the name of the container th
     # For debugging purposes we will keep track of how long it takes to find the container
     count = 1
     # As long as we have more than one candidate in the list continue
-    while (len(candidates) != 1) or (len(candidates) != 0):
+    while (len(candidates) != 1) and (len(candidates) != 0):
         # Get an image from the webcam
         success, img = cap.read()
         # If we can not get an image terminate the program
