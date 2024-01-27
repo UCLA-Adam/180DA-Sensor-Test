@@ -47,7 +47,7 @@ def get_scale_gain():
 	return ref.child("Scale Gain").get()
 
 # define the variables that will store information, all are floats
-# NAU7802 (loadcell)
+# NAU7802 (ADC)
 # SHT40 (temp + humidity sensor)
 # LTR390 (UV + LUX sensor)
 loadCellMass = gain = 0.0
@@ -299,7 +299,7 @@ def findRemovedContainer(): # Returns a string with the name of the container th
     # In order to exit this loop we must find a single container that has been removed
     # i.e. The candidates list must be reduced to one element 
     candidates = []
-    # Populate the canidates list, with containers that were present on the scale before change in mass
+    # Populate the candidates list, with containers that were present on the scale before change in mass
     for key, value in presentContainers.items():
         if value == True:
             candidates.append(key)
