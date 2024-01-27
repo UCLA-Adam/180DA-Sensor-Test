@@ -285,7 +285,7 @@ def findNewContainer(): # Returns a string with the name of the new container
                 # If it is in the dictionary, check if it was previously there
                 if presentContainers[decoded_data] == False:
                     # If that is the case, return the container's name
-                    print("Success! Found " + decoded_data + " in " + str(count) + " iterations!")
+                    print("Success! Found " + decoded_data + " in " + str(count) + " iteration(s)!")
                     cap.release()
                     return decoded_data
         # If we don't find it let's keep trying
