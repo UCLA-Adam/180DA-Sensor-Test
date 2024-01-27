@@ -334,6 +334,7 @@ def findRemovedContainer(): # Returns a string with the name of the container th
         exit()
     # When we only have one candidate left, return that candidate
     else:
+        print("The container that was removed is: " + str(candidates[0]))
         return str(candidates[0])
 
 ### Main loop
