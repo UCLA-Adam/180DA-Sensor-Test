@@ -213,7 +213,7 @@ def calibrate_weight_sensor():
 path = './OpenCVImages'
 
 # Instantiate the camera device
-cap = cv2.VideoCapture(0)
+# cap = cv2.VideoCapture(0)
 
 # Instantiate 24-bit load sensor ADC, one channel with default gain of 128
 nau7802 = NAU7802(board.I2C(), address=0x2A, active_channels=1)
@@ -263,6 +263,7 @@ presentContainers = {
 """ Find the new container that resulted in the mass change """
 def findNewContainer(): # Returns a string with the name of the new container
     print ("Searching for the new container...")
+    cap = cv2.VideoCapture(0)
     # For debugging purposes we will keep track of how long it takes to find the new container
     count = 1
     # In order to exit this loop we must find a new QR code 
@@ -285,6 +286,7 @@ def findNewContainer(): # Returns a string with the name of the new container
                 if presentContainers[decoded_data] == False:
                     # If that is the case, return the container's name
                     print("Success! Found " + decoded_data + " in " + str(count) + " iterations!")
+                    cap.release()
                     return decoded_data
         # If we don't find it let's keep trying
         print("Could not find the container in iteration: " + str(count) + " searching again")
@@ -293,6 +295,7 @@ def findNewContainer(): # Returns a string with the name of the new container
 """ Find the container that was removed """
 def findRemovedContainer(): # Returns a string with the name of the container that was removed
     print ("Searching for the container that was removed...")
+    cap = cv2.VideoCapture(0)
     # In order to exit this loop we must find a single container that has been removed
     # i.e. The candidates list must be reduced to one element 
     candidates = []
@@ -313,7 +316,7 @@ def findRemovedContainer(): # Returns a string with the name of the container th
         if not success: 
             print("Could not get video feed, quitting")
             exit()
-            
+
         # Iterate through all the QR codes
         for code in decode(img):
             # Get QR code contents
@@ -336,6 +339,7 @@ def findRemovedContainer(): # Returns a string with the name of the container th
     # When we only have one candidate left, return that candidate
     else:
         print("The container that was removed is: " + str(candidates[0]))
+        cap.release()
         return str(candidates[0])
 
 ### Main loop
