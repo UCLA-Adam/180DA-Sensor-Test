@@ -158,7 +158,7 @@ containerDict["Container_2"] = container("Container_2", 0, 0)
 containerDict["Container_3"] = container("Container_3", 0, 0)
 containerDict["Container_4"] = container("Container_4", 0, 0)
 
-""" Write code to pull dictionary from the """
+""" Write code to pull dictionary from Firebase """
 
 def zero_channel():
     """Initiate internal calibration for current channel.Use when scale is started,
