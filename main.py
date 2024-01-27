@@ -143,10 +143,12 @@ class container:
         thisContainer.currentMass = newMass
         print(str(thisContainer.qr) + ": Current mass updated, now " + str(thisContainer.currentMass))
         update_firebase_container(thisContainer.qr,"Current Container Mass", newMass)
+        time.sleep(.25)
         if newMass > thisContainer.initialMass:
             thisContainer.initialMass = thisContainer.currentMass
-            update_firebase_container(thisContainer.qr,"Initial Container Mass", newMass)
+            update_firebase_container(thisContainer.qr, "Initial Container Mass", newMass)
             print(str(thisContainer.qr) + ": Initial mass updated, now " + str(thisContainer.initialMass))
+        time.sleep(.25)
         thisContainer.updatePercentage()
 
 
