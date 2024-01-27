@@ -379,7 +379,7 @@ while True:
     else:
         print("No significant change in mass.")
         # Remove the oldest mass from prevMasses (which is in front)
-        prevMasses.remove(0)
+        prevMasses.pop(0)
         # Put in the back of prevMasses the newest mass
         prevMasses.append(loadCellMass)
 
