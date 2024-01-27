@@ -132,21 +132,21 @@ class container:
         if thisContainer.initalMass == 0: # handle the edge case
              returnVal = 0
         returnVal = round(thisContainer.currentMass / thisContainer.initialMass * 100)
-        update_firebase_container(thisContainer,"Percentage Remaining", returnVal)
+        update_firebase_container(thisContainer.qr,"Percentage Remaining", returnVal)
         return returnVal
     
     # this function updates the current mass locally and in Firebase, it accepts an int 
     # updates the % in Firebase also!
     def updateCurrentMass(thisContainer, newMass):
         thisContainer.currentMassMass = newMass
-        update_firebase_container(thisContainer,"Current Container Mass", newMass)
+        update_firebase_container(thisContainer.qr,"Current Container Mass", newMass)
         thisContainer.updatePercentage()
 
     # this function updates the inital mass locally and in Firebase, it accepts an int
     # updates the % in Firebase also!
     def updateInitalMass(thisContainer, newMass):
         thisContainer.initialMass = newMass
-        update_firebase_container(thisContainer,"Inital Container Mass", newMass)
+        update_firebase_container(thisContainer.qr,"Inital Container Mass", newMass)
         thisContainer.updatePercentage()
 
 
