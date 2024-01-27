@@ -17,7 +17,7 @@ from firebase_admin import db
 import json
 
 degree_sign = u'\N{DEGREE SIGN}'
-containerMass = 39 # units are grams, +/-1 gram 
+containerMass = 20 # units are grams, +/-1 gram 
 
 # Fetch the service account key JSON file contents
 cred = credentials.Certificate('ece-180-project-firebase-adminsdk-7eg04-74b6c29e0b.json')
