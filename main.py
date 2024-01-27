@@ -131,7 +131,8 @@ class container:
     def updatePercentage(thisContainer):
         if thisContainer.initialMass == 0: # handle the edge case
              returnVal = 0
-        returnVal = round(thisContainer.currentMass / thisContainer.initialMass * 100)
+        else:
+            returnVal = round(thisContainer.currentMass / thisContainer.initialMass * 100)
         update_firebase_container(thisContainer.qr,"Percentage Remaining", returnVal)
         return returnVal
     
