@@ -17,11 +17,11 @@ from firebase_admin import db
 import json
 
 degree_sign = u'\N{DEGREE SIGN}'
-container_mass = 39.5 # units are grams, +/-1 gram 
+containerMass = 39.5 # units are grams, +/-1 gram 
 
 # Fetch the service account key JSON file contents
 cred = credentials.Certificate('ece-180-project-firebase-adminsdk-7eg04-74b6c29e0b.json')
-"""                             ^ DO NOT PUSH THIS JSON FILE TO GITHUB, CONTAINS ACCESS TOKENS"""
+#                               ^ DO NOT PUSH THIS JSON FILE TO GITHUB, CONTAINS ACCESS TOKENS!!!
 
 # Initialize the app with a service account, granting admin privileges
 firebase_admin.initialize_app(cred, {
@@ -122,25 +122,34 @@ class container:
     
     # this function returns the percentage of product in the container as an int
     # the percentage is rounded to the nearest whole number
-    def percentage(thisContainer):
-        if thisContainer.initalMass == 0: # handle the case where the container is not intialized yet 
-             return 0
-        return round(thisContainer.currentMass / thisContainer.initialMass * 100)
-
-    # this function returns the RGB color values that correspond with how full or empty the container is
-    # green = full, red = empty
-    def labelColor(thisContainer):
-        percent  =  round(thisContainer.currentMass / thisContainer.initialMass * 100, 2)
-        if (percent >= 66.0):
-            r,g,b = 0,255,0
-        elif (percent >= 33.00):
-            r,g,b = 255,255,0
-        else:
-            r,g,b = 255,0,0
-        return r,g,b
+    def updatePercentage(thisContainer):
+        if thisContainer.initalMass == 0: # handle the edge case
+             returnVal = 0
+        returnVal = round(thisContainer.currentMass / thisContainer.initialMass * 100)
+        update_firebase_container(thisContainer,"Percentage Remaining", returnVal)
+        return returnVal
     
+    # this function updates the current mass locally and in Firebase, it accepts an int 
+    # updates the % in Firebase also!
+    def updateCurrentMass(thisContainer, newMass):
+        thisContainer.currentMassMass = newMass
+        update_firebase_container(thisContainer,"Current Container Mass", newMass)
+        thisContainer.updatePercentage()
+
+    # this function updates the inital mass locally and in Firebase, it accepts an int
+    # updates the % in Firebase also!
+    def updateInitalMass(thisContainer, newMass):
+        thisContainer.initialMass = newMass
+        update_firebase_container(thisContainer,"Inital Container Mass", newMass)
+        thisContainer.updatePercentage()
+
+
 # the dictionary to store containers
 containerDict = dict()
+containerDict["Container_1"] = container("Container_1", 0, 0)
+containerDict["Container_2"] = container("Container_2", 0, 0)
+containerDict["Container_3"] = container("Container_3", 0, 0)
+containerDict["Container_4"] = container("Container_4", 0, 0)
 
 """ Write code to pull dictionary from the """
 
@@ -234,75 +243,197 @@ print("LTR390 READY")
 
 getSensorReadings()
 
+# We will remember the last 5 masses and compare to see if there is a jump 
+prevMasses = [0.0, 0.0, 0.0, 0.0, 0.0]
+
+# We are keeping track of what is here
+presentContainers = {
+  "Container_1": False,
+  "Container_2": False,
+  "Container_3": False,
+  "Container_4": False
+}
+
+""" Find the new container that resulted in the mass change """
+def findNewContainer(): # Returns a string with the name of the new container
+    print ("Searching for the new container...")
+    # For debugging purposes we will keep track of how long it takes to find the new container
+    count = 1
+    # In order to exit this loop we must find a new QR code 
+    while True:
+        # Get an image from the webcam
+        success, img = cap.read()
+        # If we can not get an image terminate the program
+        if not success: 
+            print("Could not get video feed, quitting")
+            exit()
+        # Read all the QR codes present in the frame
+        decoded_list = decode(img)
+        # Iterate through all the QR codes
+        for code in decoded_list:
+            # Get QR code contents
+            decoded_data = code.data.decode("utf-8")
+            # Check if it is in our presentContainers dictionary
+            if decoded_data in presentContainers.keys():
+                # If it is in the dictionary, check if it was previously there
+                if presentContainers[decoded_data] == False:
+                    # If that is the case, return the container's name
+                    print("Success! Found " + decoded_data + " in " + count + " iterations!")
+                    return decoded_data
+        # If we don't find it let's keep trying
+        print("Could not find the container in iteration: " + count + " searching again")
+        count += 1
+
+""" Find the container that was removed """
+def findRemovedContainer(): # Returns a string with the name of the container that was removed
+    print ("Searching for the container that was removed...")
+    # In order to exit this loop we must find a single container that has been removed
+    # i.e. The candidates list must be reduced to one element 
+    candidates = []
+    # Populate the canidates list, with containers that were present on the scale before change in mass
+    for key, value in presentContainers:
+        if value == True:
+            candidates.append(key)
+    print("Candidates containers: ")
+    print(' '.join(candidates))
+        
+    # For debugging purposes we will keep track of how long it takes to find the container
+    count = 1
+    # As long as we have more than one candidate in the list continue
+    while (len(candidates) != 1) or (len(candidates) != 0):
+        # Get an image from the webcam
+        success, img = cap.read()
+        # If we can not get an image terminate the program
+        if not success: 
+            print("Could not get video feed, quitting")
+            exit()
+        # Read all the QR codes present in the frame
+        decoded_list = decode(img)
+        # Iterate through all the QR codes
+        for code in decoded_list:
+            # Get QR code contents
+            decoded_data = code.data.decode("utf-8")
+            # Check if it is in our list of candidates
+            if decoded_data in candidates:
+                candidates.remove(decoded_data)
+                print(decoded_data + " is still here.")
+        # If we don't find it let's keep trying
+        print("Could not find the container in iteration: " + count + " searching again")
+        count += 1
+    # If we find that all the containers are still present
+    if len(candidates) == 0:
+        print("That's odd, all the containers are still here.")
+        exit()
+    # When we only have one candidate left, return that candidate
+    else:
+        return str(candidates[0])
+
 ### Main loop
 while True:
 
-    # If we can get video, read
-    success, img = cap.read()
-
-    # If we can not get video, break
-    if not success: 
-        print("Could not get video feed, quitting")
-        break
-
-
-    # Look for QR codes and add labels 
-    decoded_list = decode(img)
-    for code in decoded_list:
-        # Get QR code contents
-        decoded_data = code.data.decode("utf-8")
-
-        if decoded_data in containerDict.keys():
-            # To do, calculate the difference in mass for that container 
-            print(decoded_data + " is present, here is the information on that container:")
-            print ("Inital Mass = " + str(containerDict[decoded_data].initialMass))
-            print ("Current Mass = " + str(containerDict[decoded_data].currentMass))
-            print ("Percent Remaining = " + str(containerDict[decoded_data].percentage()) + "%")
-            print ("Label RGB Code = " + str(containerDict[decoded_data].labelColor()))
-
-            update_firebase_container(decoded_data, "Current Container Mass", containerDict[decoded_data].currentMass)
-            update_firebase_container(decoded_data, "Percentage Remaining", containerDict[decoded_data].percentage())
-
-        else:
-            print(decoded_data + " is new, adding it now!")    
-            containerDict[decoded_data] = container(decoded_data, 10, 10)    
-            # To do, record the inital mass of that container 
-            update_firebase_container(decoded_data, "Initial Container Mass", containerDict[decoded_data].initialMass)
-            update_firebase_container(decoded_data, "Current Container Mass", containerDict[decoded_data].currentMass)
-            update_firebase_container(decoded_data, "Percentage Remaining", containerDict[decoded_data].percentage())
-
-
-         # Get bounding QR code box
-        rect_pts = code.rect
-        # Print what is decoded from that QR code into console
-        # print(decoded_data + " is present")
-        # If info in QR code, display on screen in frame
-        if decoded_data:
-            # call color function
-            #
-            #
-            pts = np.array([code.polygon], np.int32)
-            cv2.polylines(img, [pts], True, (0, 255, 0), 3)
-            cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 2)
-
-    # Update Firebase with the number of containers present
-    update_firebase_scale("Scale Containers Present", len(decoded_list))
-
     getSensorReadings()
+    avgOfPrevMasses = sum(prevMasses) / len(prevMasses)
+    differenceInMass = loadCellMass - avgOfPrevMasses
 
-    # Display the array of data on the top left
-    # frame = np.ones([400,400,3])*255
-    offset = 35
-    x,y = 10,10+35
-    for idx,lbl in enumerate(overlayArray):
-        cv2.putText(img, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,255,0), 2)
+    # CASE 1: INCREASE IN MASS
+    if (differenceInMass > containerMass):
+        # Find the new container
+        newContainer = findNewContainer()
 
-    # Name the output file, we only keep the most recent 60 frames
-    filename = 'openCVOutput_' + str(imageCount) + '.jpg'
-    if imageCount == 60:
-        imageCount = 0
-    cv2.imwrite(os.path.join(path , filename), img)
-    imageCount += 1
+        # Mark it as here in our presentContainers dictionary
+        presentContainers[newContainer] = True
+
+        # Get a (hopefully) settled reading from the scale
+        getSensorReadings()
+
+        # Update the current mass of the container locally and in Firebase
+        containerDict[newContainer].updateCurrentMass(loadCellMass - avgOfPrevMasses)
+
+        # If we happened to add more than the initial amount this is now the inital amount
+        if containerDict[newContainer].currentMass > containerDict[newContainer].initalMass:
+            containerDict[newContainer].updateInitalMass(containerDict[newContainer].currentMass)
+
+        # Make all the prevMasses the current mass so the next iteration doesn't think there was a change
+        prevMasses = [loadCellMass, loadCellMass, loadCellMass, loadCellMass, loadCellMass]
+
+    # CASE 2: DECREASE IN MASS
+    elif (differenceInMass < containerMass):
+        # Find the container that was removed
+        removedContainer = findRemovedContainer()
+        # Mark it as not present in our presentContainers dictionary
+        presentContainers[removedContainer] = False
+
+        # Make all the prevMasses the current mass so the next iteration doesn't think there was a change
+        prevMasses = [loadCellMass, loadCellMass, loadCellMass, loadCellMass, loadCellMass]
+
+    # CASE 3:  NO SIGNIFICANT CHANGE IN MASS
+    else:
+        # Remove the oldest mass from prevMasses
+        prevMasses.pop()
+        # Put in front of prevMasses the newest mass
+        prevMasses.insert(0, loadCellMass)
+
+# release the camera that we have initialized for our code
+cap.release()
+
+
+    # # Look for QR codes and add labels 
+    # decoded_list = decode(img)
+    # for code in decoded_list:
+    #     # Get QR code contents
+    #     decoded_data = code.data.decode("utf-8")
+
+    #     if decoded_data in containerDict.keys():
+    #         # To do, calculate the difference in mass for that container 
+    #         print(decoded_data + " is present, here is the information on that container:")
+    #         print ("Inital Mass = " + str(containerDict[decoded_data].initialMass))
+    #         print ("Current Mass = " + str(containerDict[decoded_data].currentMass))
+    #         print ("Percent Remaining = " + str(containerDict[decoded_data].percentage()) + "%")
+    #         print ("Label RGB Code = " + str(containerDict[decoded_data].labelColor()))
+
+    #         update_firebase_container(decoded_data, "Current Container Mass", containerDict[decoded_data].currentMass)
+    #         update_firebase_container(decoded_data, "Percentage Remaining", containerDict[decoded_data].percentage())
+
+    #     else:
+    #         print(decoded_data + " is new, adding it now!")    
+    #         containerDict[decoded_data] = container(decoded_data, 10, 10)    
+    #         # To do, record the inital mass of that container 
+    #         update_firebase_container(decoded_data, "Initial Container Mass", containerDict[decoded_data].initialMass)
+    #         update_firebase_container(decoded_data, "Current Container Mass", containerDict[decoded_data].currentMass)
+    #         update_firebase_container(decoded_data, "Percentage Remaining", containerDict[decoded_data].percentage())
+
+
+    #      # Get bounding QR code box
+    #     rect_pts = code.rect
+    #     # Print what is decoded from that QR code into console
+    #     # print(decoded_data + " is present")
+    #     # If info in QR code, display on screen in frame
+    #     if decoded_data:
+    #         # call color function
+    #         #
+    #         #
+    #         pts = np.array([code.polygon], np.int32)
+    #         cv2.polylines(img, [pts], True, (0, 255, 0), 3)
+    #         cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 2)
+
+    # # Update Firebase with the number of containers present
+    # update_firebase_scale("Scale Containers Present", len(decoded_list))
+
+    # getSensorReadings()
+
+    # # Display the array of data on the top left
+    # # frame = np.ones([400,400,3])*255
+    # offset = 35
+    # x,y = 10,10+35
+    # for idx,lbl in enumerate(overlayArray):
+    #     cv2.putText(img, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,255,0), 2)
+
+    # # Name the output file, we only keep the most recent 60 frames
+    # filename = 'openCVOutput_' + str(imageCount) + '.jpg'
+    # if imageCount == 60:
+    #     imageCount = 0
+    # cv2.imwrite(os.path.join(path , filename), img)
+    # imageCount += 1
 
 
 """  
@@ -318,5 +449,4 @@ while True:
 """
 
 
-# release the camera that we have initialized for our code
-cap.release()
+
