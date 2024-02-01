@@ -153,10 +153,12 @@ class container:
 
 # the dictionary to store containers, pulls the initial masses from firebase 
 containerDict = dict()
-containerDict["Container_1"] = container("Container_1", ref.child("Container_1", "Initial Container Mass").get(), 0)
-containerDict["Container_2"] = container("Container_2", ref.child("Container_2", "Initial Container Mass").get(), 0)
-containerDict["Container_3"] = container("Container_3", ref.child("Container_3", "Initial Container Mass").get(), 0)
-containerDict["Container_4"] = container("Container_4", ref.child("Container_4", "Initial Container Mass").get(), 0)
+containerDict["Container_1"] = container("Container_1", 0, 0)
+containerDict["Container_2"] = container("Container_2", 0, 0)
+containerDict["Container_3"] = container("Container_3", 0, 0)
+containerDict["Container_4"] = container("Container_4", 0, 0)
+
+# ref.child("Container_1", "Initial Container Mass").get()
 
 def zero_channel():
     """Initiate internal calibration for current channel.Use when scale is started,
