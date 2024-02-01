@@ -141,24 +141,22 @@ class container:
     # updates the % in Firebase also!
     def updateCurrentMass(thisContainer, newMass):
         thisContainer.currentMass = newMass
-        print(str(thisContainer.qr) + ": Current mass updated, now " + str(thisContainer.currentMass))
+        print(str(thisContainer.qr) + ": Current mass updated, now " + str(thisContainer.currentMass) + "g")
         update_firebase_container(thisContainer.qr,"Current Container Mass", newMass)
         if newMass > thisContainer.initialMass:
             thisContainer.initialMass = thisContainer.currentMass
             update_firebase_container(thisContainer.qr,"Initial Container Mass", newMass)
-            print(str(thisContainer.qr) + ": Initial mass updated, now " + str(thisContainer.initialMass))
+            print(str(thisContainer.qr) + ": Initial mass updated, now " + str(thisContainer.initialMass) + "g")
         thisContainer.updatePercentage()
 
 
 
-# the dictionary to store containers
+# the dictionary to store containers, pulls the initial masses from firebase 
 containerDict = dict()
-containerDict["Container_1"] = container("Container_1", 0, 0)
-containerDict["Container_2"] = container("Container_2", 0, 0)
-containerDict["Container_3"] = container("Container_3", 0, 0)
-containerDict["Container_4"] = container("Container_4", 0, 0)
-
-""" Write code to pull dictionary from Firebase """
+containerDict["Container_1"] = container("Container_1", ref.child("Container_1", "Initial Container Mass").get(), 0)
+containerDict["Container_2"] = container("Container_2", ref.child("Container_2", "Initial Container Mass").get(), 0)
+containerDict["Container_3"] = container("Container_3", ref.child("Container_3", "Initial Container Mass").get(), 0)
+containerDict["Container_4"] = container("Container_4", ref.child("Container_4", "Initial Container Mass").get(), 0)
 
 def zero_channel():
     """Initiate internal calibration for current channel.Use when scale is started,
