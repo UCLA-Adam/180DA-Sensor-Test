@@ -17,7 +17,8 @@ from firebase_admin import db
 import json
 
 degree_sign = u'\N{DEGREE SIGN}'
-containerMass = 30 # units are grams, +/-1 gram 
+# Tune to account for small bumps on the scale when placing and removing containers
+thresholdMass = 30 # units are grams, +/-1 gram 
 
 # Fetch the service account key JSON file contents
 cred = credentials.Certificate('ece-180-project-firebase-adminsdk-7eg04-74b6c29e0b.json')
@@ -150,15 +151,17 @@ class container:
         thisContainer.updatePercentage()
 
 
+def get_initial_mass(container):
+	return 0
 
-# the dictionary to store containers, pulls the initial masses from firebase 
+
+# the dictionary to store containers, now pulls the initial masses from firebase 
 containerDict = dict()
-containerDict["Container_1"] = container("Container_1", 0, 0)
-containerDict["Container_2"] = container("Container_2", 0, 0)
-containerDict["Container_3"] = container("Container_3", 0, 0)
-containerDict["Container_4"] = container("Container_4", 0, 0)
+containerDict["Container_1"] = container("Container_1", get_initial_mass("Container_1"), 0)
+containerDict["Container_2"] = container("Container_2", get_initial_mass("Container_2"), 0)
+containerDict["Container_3"] = container("Container_3", get_initial_mass("Container_3"), 0)
+containerDict["Container_4"] = container("Container_4", get_initial_mass("Container_4"), 0)
 
-# ref.child("Container_1", "Initial Container Mass").get()
 
 def zero_channel():
     """Initiate internal calibration for current channel.Use when scale is started,
@@ -354,7 +357,7 @@ while True:
     # print("The difference in mass from the average is: " + str(differenceInMass))
 
     # CASE 1: INCREASE IN MASS
-    if (differenceInMass > containerMass):
+    if (differenceInMass > thresholdMass):
         # Find the new container
         newContainer = findNewContainer()
 
@@ -371,7 +374,7 @@ while True:
         prevMasses = [loadCellMass, loadCellMass, loadCellMass, loadCellMass, loadCellMass]
 
     # CASE 2: DECREASE IN MASS
-    elif (abs(differenceInMass) > containerMass):
+    elif (abs(differenceInMass) > thresholdMass):
         # wait one second so the QR is out of the frame 
         time.sleep(1)
         # Find the container that was removed

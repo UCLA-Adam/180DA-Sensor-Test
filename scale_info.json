@@ -8,7 +8,6 @@
 		"Scale UV": 0.0,
 		"Scale Lux": 0.0,
 		"Scale Gain": 0.0,
-		"Scale Containers Present": 0,
 		"Container_1":
 		{
 			"Container Name": "Container_1",
@@ -20,8 +19,7 @@
 			"Min Storage Temperature": 0.0,
 			"Min Storage Humidity": 0.0,
 			"Max Storage UV": 0.0,
-			"Max Storage Lux": 0.0,
-			"Registered": 0
+			"Max Storage Lux": 0.0
 		},
 		"Container_2":
 		{
@@ -34,8 +32,7 @@
 			"Min Storage Temperature": 0.0,
 			"Min Storage Humidity": 0.0,
 			"Max Storage UV": 0.0,
-			"Max Storage Lux": 0.0,
-			"Registered": 0
+			"Max Storage Lux": 0.0
 		},
 		"Container_3":
 		{
@@ -48,8 +45,7 @@
 			"Min Storage Temperature": 0.0,
 			"Min Storage Humidity": 0.0,
 			"Max Storage UV": 0.0,
-			"Max Storage Lux": 0.0,
-			"Registered": 0
+			"Max Storage Lux": 0.0
 		},
 		"Container_4":
 		{
@@ -62,8 +58,7 @@
 			"Min Storage Temperature": 0.0,
 			"Min Storage Humidity": 0.0,
 			"Max Storage UV": 0.0,
-			"Max Storage Lux": 0.0,
-			"Registered": 0
+			"Max Storage Lux": 0.0
 		}
 	}
 }
