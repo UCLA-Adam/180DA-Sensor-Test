@@ -17,7 +17,7 @@ from firebase_admin import db
 import json
 
 degree_sign = u'\N{DEGREE SIGN}'
-# Tune to account for small bumps on the scale when placing and removing containers
+# Tuned to account for small bumps on the scale when placing and removing containers
 thresholdMass = 30 # units are grams, +/-1 gram 
 
 # Fetch the service account key JSON file contents
