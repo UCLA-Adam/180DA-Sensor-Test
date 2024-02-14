@@ -393,12 +393,13 @@ def update_display():
     # Draw a black filled box to clear the image.
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
+    # Gather the information to display for each container
     c1 = ("*" if presentContainers["Container_1"] else " ") + "Container 1: " + containerDict["Container_1"].getPercentage()
     c2 = ("*" if presentContainers["Container_2"] else " ") + "Container 2: " + containerDict["Container_2"].getPercentage()
     c3 = ("*" if presentContainers["Container_3"] else " ") + "Container 3: " + containerDict["Container_3"].getPercentage()
     c4 = ("*" if presentContainers["Container_4"] else "*") + "Container 4: " + containerDict["Container_4"].getPercentage()
 
-    # Four lines of text
+    # Draw our four lines of text
     draw.text((x, top + 0),  c1, font=font, fill=255)
     draw.text((x, top + 8),  c2, font=font, fill=255)
     draw.text((x, top + 16), c3, font=font, fill=255)
@@ -460,78 +461,9 @@ while True:
 
 # release the camera that we have initialized for our code
 cap.release()
+# clear the display
+draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
-
-    # # Look for QR codes and add labels 
-    # decoded_list = decode(img)
-    # for code in decoded_list:
-    #     # Get QR code contents
-    #     decoded_data = code.data.decode("utf-8")
-
-    #     if decoded_data in containerDict.keys():
-    #         # To do, calculate the difference in mass for that container 
-    #         print(decoded_data + " is present, here is the information on that container:")
-    #         print ("initial Mass = " + str(containerDict[decoded_data].initialMass))
-    #         print ("Current Mass = " + str(containerDict[decoded_data].currentMass))
-    #         print ("Percent Remaining = " + str(containerDict[decoded_data].percentage()) + "%")
-    #         print ("Label RGB Code = " + str(containerDict[decoded_data].labelColor()))
-
-    #         update_firebase_container(decoded_data, "Current Container Mass", containerDict[decoded_data].currentMass)
-    #         update_firebase_container(decoded_data, "Percentage Remaining", containerDict[decoded_data].percentage())
-
-    #     else:
-    #         print(decoded_data + " is new, adding it now!")    
-    #         containerDict[decoded_data] = container(decoded_data, 10, 10)    
-    #         # To do, record the initial mass of that container 
-    #         update_firebase_container(decoded_data, "Initial Container Mass", containerDict[decoded_data].initialMass)
-    #         update_firebase_container(decoded_data, "Current Container Mass", containerDict[decoded_data].currentMass)
-    #         update_firebase_container(decoded_data, "Percentage Remaining", containerDict[decoded_data].percentage())
-
-
-    #      # Get bounding QR code box
-    #     rect_pts = code.rect
-    #     # Print what is decoded from that QR code into console
-    #     # print(decoded_data + " is present")
-    #     # If info in QR code, display on screen in frame
-    #     if decoded_data:
-    #         # call color function
-    #         #
-    #         #
-    #         pts = np.array([code.polygon], np.int32)
-    #         cv2.polylines(img, [pts], True, (0, 255, 0), 3)
-    #         cv2.putText(img, str(decoded_data), (rect_pts[0], rect_pts[1]), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 2)
-
-    # # Update Firebase with the number of containers present
-    # update_firebase_scale("Scale Containers Present", len(decoded_list))
-
-    # getSensorReadings()
-
-    # # Display the array of data on the top left
-    # # frame = np.ones([400,400,3])*255
-    # offset = 35
-    # x,y = 10,10+35
-    # for idx,lbl in enumerate(overlayArray):
-    #     cv2.putText(img, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,255,0), 2)
-
-    # # Name the output file, we only keep the most recent 60 frames
-    # filename = 'openCVOutput_' + str(imageCount) + '.jpg'
-    # if imageCount == 60:
-    #     imageCount = 0
-    # cv2.imwrite(os.path.join(path , filename), img)
-    # imageCount += 1
-
-
-"""  
-    ** If we were using a headful system we would use this section **
-
-    # Display the image
-    cv2.imshow("image", img)
-
-    # waitKey(0) will display the window infinitely until any keypress (it is suitable for image display).
-    # waitKey(1) will display a frame for 1 ms, after which display will be automatically closed.
-    cv2.waitKey(1)
-
-"""
 
 
 
