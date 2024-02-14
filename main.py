@@ -401,10 +401,10 @@ def update_display():
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
     # Gather the information to display for each container
-    c1 = ("*" if presentContainers["Container_1"] else " ") + get_name("Container_1") + containerDict["Container_1"].getPercentage()
-    c2 = ("*" if presentContainers["Container_2"] else " ") + get_name("Container_2") + containerDict["Container_2"].getPercentage()
-    c3 = ("*" if presentContainers["Container_3"] else " ") + get_name("Container_3") + containerDict["Container_3"].getPercentage()
-    c4 = ("*" if presentContainers["Container_4"] else " ") + get_name("Container_4") + containerDict["Container_4"].getPercentage()
+    c1 = ("*" if presentContainers["Container_1"] else " ") + get_name("Container_1") + ": " + containerDict["Container_1"].getPercentage()
+    c2 = ("*" if presentContainers["Container_2"] else " ") + get_name("Container_2") + ": " + containerDict["Container_2"].getPercentage()
+    c3 = ("*" if presentContainers["Container_3"] else " ") + get_name("Container_3") + ": " + containerDict["Container_3"].getPercentage()
+    c4 = ("*" if presentContainers["Container_4"] else " ") + get_name("Container_4") + ": " + containerDict["Container_4"].getPercentage()
 
     # Draw our four lines of text
     draw.text((x, top + 0),  c1, font=font, fill=255)
