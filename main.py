@@ -389,8 +389,8 @@ def findRemovedContainer(): # Returns a string with the name of the container th
         cap.release()
         return str(candidates[0])
 
-def isContainerPresent(container):
-    if presentContainers[container]:
+def isContainerPresent(name):
+    if presentContainers[name]:
         return "*"
     else: 
         return "-"
