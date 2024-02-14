@@ -151,9 +151,10 @@ class container:
     
     def getPercentage(thisContainer):
         if thisContainer.initialMass == 0: # handle the edge case
-             return str(0) + "%"
+             val = str(0) + "%"
         else:
-            return str(round(thisContainer.currentMass / thisContainer.initialMass * 100)) + "%"
+            val = str(round(thisContainer.currentMass / thisContainer.initialMass * 100)) + "%"
+        return val
 
     # this function updates the current mass locally and in Firebase, it accepts an int 
     # updates the % in Firebase also!
