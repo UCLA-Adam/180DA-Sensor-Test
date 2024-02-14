@@ -23,9 +23,13 @@ import digitalio
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1305
 
+cmd = "hostname -I | cut -d' ' -f1"
+IP = subprocess.check_output(cmd, shell=True).decode("utf-8")
+print("Local IP: " + str(IP))
+
 degree_sign = u'\N{DEGREE SIGN}'
 # Tuned to account for small bumps on the scale when placing and removing containers
-thresholdMass = 30 # units are grams, +/-1 gram 
+thresholdMass = 27 # units are grams, +/-1 gram 
 
 # Fetch the service account key JSON file contents
 cred = credentials.Certificate('ece-180-project-firebase-adminsdk-7eg04-74b6c29e0b.json')
