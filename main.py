@@ -23,64 +23,6 @@ import digitalio
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1305
 
-oled_reset = digitalio.DigitalInOut(board.D4)
-disp = adafruit_ssd1305.SSD1305_I2C(128, 32, i2c, reset=oled_reset)
-
-# Clear display.
-disp.fill(0)
-disp.show()
-
-# Create blank image for drawing.
-# Make sure to create image with mode '1' for 1-bit color.
-width = disp.width
-height = disp.height
-image = Image.new("1", (width, height))
-
-# Get drawing object to draw on image.
-draw = ImageDraw.Draw(image)
-
-# Draw a black filled box to clear the image.
-draw.rectangle((0, 0, width, height), outline=0, fill=0)
-
-# Draw some shapes.
-# First define some constants to allow easy resizing of shapes.
-padding = -2
-top = padding
-bottom = height - padding
-# Move left to right keeping track of the current x position for drawing shapes.
-x = 0
-
-# Load default font.
-font = ImageFont.load_default()
-
-def update_display():
-    # Draw a black filled box to clear the image.
-    draw.rectangle((0, 0, width, height), outline=0, fill=0)
-
-    # Shell scripts for system monitoring from here:
-    # https://unix.stackexchange.com/questions/119126/command-to-display-memory-usage-disk-usage-and-cpu-load
-    cmd = "hostname -I | cut -d' ' -f1"
-    IP = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    cmd = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)}'"
-    CPU = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%s MB  %.2f%%\", $3,$2,$3*100/$2 }'"
-    MemUsage = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    cmd = 'df -h | awk \'$NF=="/"{printf "Disk: %d/%d GB  %s", $3,$2,$5}\''
-    Disk = subprocess.check_output(cmd, shell=True).decode("utf-8")
-
-    # Write four lines of text.
-
-    draw.text((x, top + 0), "IP: " + IP, font=font, fill=255)
-    draw.text((x, top + 8), CPU, font=font, fill=255)
-    draw.text((x, top + 16), MemUsage, font=font, fill=255)
-    draw.text((x, top + 25), Disk, font=font, fill=255)
-
-    # Display image.
-    disp.image(image)
-    disp.show()
-    time.sleep(0.1)
-
-
 degree_sign = u'\N{DEGREE SIGN}'
 # Tuned to account for small bumps on the scale when placing and removing containers
 thresholdMass = 30 # units are grams, +/-1 gram 
@@ -314,6 +256,65 @@ print("SHT4X READY")
 i2c = busio.I2C(board.SCL, board.SDA)
 ltr = adafruit_ltr390.LTR390(i2c)
 print("LTR390 READY")
+
+oled_reset = digitalio.DigitalInOut(board.D4)
+disp = adafruit_ssd1305.SSD1305_I2C(128, 32, i2c, reset=oled_reset)
+
+# Clear display.
+disp.fill(0)
+disp.show()
+
+# Create blank image for drawing.
+# Make sure to create image with mode '1' for 1-bit color.
+width = disp.width
+height = disp.height
+image = Image.new("1", (width, height))
+
+# Get drawing object to draw on image.
+draw = ImageDraw.Draw(image)
+
+# Draw a black filled box to clear the image.
+draw.rectangle((0, 0, width, height), outline=0, fill=0)
+
+# Draw some shapes.
+# First define some constants to allow easy resizing of shapes.
+padding = -2
+top = padding
+bottom = height - padding
+# Move left to right keeping track of the current x position for drawing shapes.
+x = 0
+
+# Load default font.
+font = ImageFont.load_default()
+
+def update_display():
+    # Draw a black filled box to clear the image.
+    draw.rectangle((0, 0, width, height), outline=0, fill=0)
+
+    # Shell scripts for system monitoring from here:
+    # https://unix.stackexchange.com/questions/119126/command-to-display-memory-usage-disk-usage-and-cpu-load
+    cmd = "hostname -I | cut -d' ' -f1"
+    IP = subprocess.check_output(cmd, shell=True).decode("utf-8")
+    cmd = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)}'"
+    CPU = subprocess.check_output(cmd, shell=True).decode("utf-8")
+    cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%s MB  %.2f%%\", $3,$2,$3*100/$2 }'"
+    MemUsage = subprocess.check_output(cmd, shell=True).decode("utf-8")
+    cmd = 'df -h | awk \'$NF=="/"{printf "Disk: %d/%d GB  %s", $3,$2,$5}\''
+    Disk = subprocess.check_output(cmd, shell=True).decode("utf-8")
+
+    # Write four lines of text.
+
+    draw.text((x, top + 0), "IP: " + IP, font=font, fill=255)
+    draw.text((x, top + 8), CPU, font=font, fill=255)
+    draw.text((x, top + 16), MemUsage, font=font, fill=255)
+    draw.text((x, top + 25), Disk, font=font, fill=255)
+
+    # Display image.
+    disp.image(image)
+    disp.show()
+    time.sleep(0.1)
+
+
 
 getSensorReadings()
 
