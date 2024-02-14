@@ -56,7 +56,9 @@ def get_scale_gain():
 	return ref.child("Scale Gain").get()
 
 def get_initial_mass(container):
-	return ref.child(container).child("Initial Container Mass")
+    # Get a database reference to our posts
+    ref = db.reference("/Scale_1/" + container + "/Initial Container Mass" )
+    return ref.get()
 
 # define the variables that will store information, all are floats
 # NAU7802 (ADC)
