@@ -398,10 +398,10 @@ def update_display():
     Disk = subprocess.check_output(cmd, shell=True).decode("utf-8")
 
     # Four lines of text
-    draw.text((x, top + 0),  "Container 1: Present " + presentContainers["Container_1"], font=font, fill=255)
-    draw.text((x, top + 8),  "Container 2: Present " + presentContainers["Container_2"], font=font, fill=255)
-    draw.text((x, top + 16), "Container 3: Present " + presentContainers["Container_3"], font=font, fill=255)
-    draw.text((x, top + 25), "Container 4: Present " + presentContainers["Container_4"], font=font, fill=255)
+    draw.text((x, top + 0),  "Container 1: Present " + str(presentContainers["Container_1"]), font=font, fill=255)
+    draw.text((x, top + 8),  "Container 2: Present " + str(presentContainers["Container_2"]), font=font, fill=255)
+    draw.text((x, top + 16), "Container 3: Present " + str(presentContainers["Container_3"]), font=font, fill=255)
+    draw.text((x, top + 25), "Container 4: Present " + str(presentContainers["Container_4"]), font=font, fill=255)
 
     # Display image.
     disp.image(image)
