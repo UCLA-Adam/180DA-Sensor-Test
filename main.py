@@ -15,17 +15,16 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 import json
-
-# Display Packages
 import subprocess
 # from board import SCL, SDA, D4
 import digitalio
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1305
+from requests import get
 
 cmd = "hostname -I | cut -d' ' -f1"
-IP = subprocess.check_output(cmd, shell=True).decode("utf-8")
-print("Local IP: " + str(IP))
+print("Local IP: " + str(subprocess.check_output(cmd, shell=True).decode("utf-8")))
+print('Public IP: {}'.format(get('https://api.ipify.org').content.decode('utf8')))
 
 degree_sign = u'\N{DEGREE SIGN}'
 # Tuned to account for small bumps on the scale when placing and removing containers
