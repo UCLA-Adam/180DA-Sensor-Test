@@ -396,7 +396,7 @@ def update_display():
     c1 = ("*" if presentContainers["Container_1"] else " ") + "Container 1: " + containerDict["Container_1"].getPercentage()
     c2 = ("*" if presentContainers["Container_2"] else " ") + "Container 2: " + containerDict["Container_2"].getPercentage()
     c3 = ("*" if presentContainers["Container_3"] else " ") + "Container 3: " + containerDict["Container_3"].getPercentage()
-    c4 = ("*" if presentContainers["Container_4"] else " ") + "Container 4: " + containerDict["Container_4"].getPercentage()
+    c4 = ("*" if presentContainers["Container_4"] else "*") + "Container 4: " + containerDict["Container_4"].getPercentage()
 
     # Four lines of text
     draw.text((x, top + 0),  c1, font=font, fill=255)
