@@ -389,13 +389,6 @@ def findRemovedContainer(): # Returns a string with the name of the container th
         cap.release()
         return str(candidates[0])
 
-def isContainerPresent(name):
-    present = presentContainers[name]
-    if present:
-        return "*"
-    else: 
-        return "-"
-
 def update_display():
     # Draw a black filled box to clear the image.
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
@@ -410,7 +403,7 @@ def update_display():
     cmd = 'df -h | awk \'$NF=="/"{printf "Disk: %d/%d GB  %s", $3,$2,$5}\''
     Disk = subprocess.check_output(cmd, shell=True).decode("utf-8")
 
-    c1 = isContainerPresent["Container_1"] + "Container 1: "# + containerDict["Container_1"].getPercentage() + "%"
+    c1 = ("*" if isContainerPresent["Container_1"] else "-") + "Container 1: "# + containerDict["Container_1"].getPercentage() + "%"
     # c2 = isContainerPresent["Container_2"] + "Container 2: " + containerDict["Container_2"].getPercentage() + "%"
     # c3 = isContainerPresent["Container_3"] + "Container 3: " + containerDict["Container_3"].getPercentage() + "%"
     # c4 = isContainerPresent["Container_4"] + "Container 4: " + containerDict["Container_4"].getPercentage() + "%"
