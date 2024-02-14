@@ -390,8 +390,8 @@ def findRemovedContainer(): # Returns a string with the name of the container th
         return str(candidates[0])
 
 def isContainerPresent(name):
-    global presentContainers
-    if presentContainers[name]:
+    present = presentContainers[name]
+    if present:
         return "*"
     else: 
         return "-"
