@@ -147,9 +147,9 @@ class container:
     
     def getPercentage(thisContainer):
         if thisContainer.initialMass == 0: # handle the edge case
-             return 0
+             return str(0) + "%"
         else:
-            return round(thisContainer.currentMass / thisContainer.initialMass * 100)
+            return str(round(thisContainer.currentMass / thisContainer.initialMass * 100)) + "%"
 
     # this function updates the current mass locally and in Firebase, it accepts an int 
     # updates the % in Firebase also!
@@ -393,26 +393,16 @@ def update_display():
     # Draw a black filled box to clear the image.
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
-    # System information variables 
-    cmd = "hostname -I | cut -d' ' -f1"
-    IP = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    cmd = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)}'"
-    CPU = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%s MB  %.2f%%\", $3,$2,$3*100/$2 }'"
-    MemUsage = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    cmd = 'df -h | awk \'$NF=="/"{printf "Disk: %d/%d GB  %s", $3,$2,$5}\''
-    Disk = subprocess.check_output(cmd, shell=True).decode("utf-8")
-
-    c1 = ("*" if presentContainers["Container_1"] else "-") + "Container 1: " + str(containerDict["Container_1"].getPercentage()) + "%"
-    # c2 = isContainerPresent["Container_2"] + "Container 2: " + containerDict["Container_2"].getPercentage() + "%"
-    # c3 = isContainerPresent["Container_3"] + "Container 3: " + containerDict["Container_3"].getPercentage() + "%"
-    # c4 = isContainerPresent["Container_4"] + "Container 4: " + containerDict["Container_4"].getPercentage() + "%"
+    c1 = ("*" if presentContainers["Container_1"] else "-") + "Container 1: " + containerDict["Container_1"].getPercentage()
+    c2 = ("*" if presentContainers["Container_2"] else "-") + "Container 2: " + containerDict["Container_2"].getPercentage()
+    c3 = ("*" if presentContainers["Container_3"] else "-") + "Container 3: " + containerDict["Container_3"].getPercentage()
+    c4 = ("*" if presentContainers["Container_4"] else "-") + "Container 4: " + containerDict["Container_4"].getPercentage()
 
     # Four lines of text
     draw.text((x, top + 0),  c1, font=font, fill=255)
-    draw.text((x, top + 8),  c1, font=font, fill=255)
-    draw.text((x, top + 16), c1, font=font, fill=255)
-    draw.text((x, top + 25), c1, font=font, fill=255)
+    draw.text((x, top + 8),  c2, font=font, fill=255)
+    draw.text((x, top + 16), c3, font=font, fill=255)
+    draw.text((x, top + 25), c4, font=font, fill=255)
 
     # Display image.
     disp.image(image)
