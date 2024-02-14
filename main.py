@@ -387,7 +387,7 @@ def isContainerPresent(container):
     if presentContainers[container]:
         return "*"
     else: 
-        return " "
+        return "-"
 
 def update_display():
     # Draw a black filled box to clear the image.
@@ -404,10 +404,10 @@ def update_display():
     Disk = subprocess.check_output(cmd, shell=True).decode("utf-8")
 
     # Four lines of text
-    draw.text((x, top + 0),  "Container 1: " + isContainerPresent["Container_1"], font=font, fill=255)
-    draw.text((x, top + 8),  "Container 2: " + isContainerPresent["Container_2"], font=font, fill=255)
-    draw.text((x, top + 16), "Container 3: " + isContainerPresent["Container_3"], font=font, fill=255)
-    draw.text((x, top + 25), "Container 4: " + isContainerPresent["Container_4"], font=font, fill=255)
+    draw.text((x, top + 0),  isContainerPresent["Container_1"] + "Container 1: ", font=font, fill=255)
+    draw.text((x, top + 8),  isContainerPresent["Container_2"] + "Container 2: ", font=font, fill=255)
+    draw.text((x, top + 16), isContainerPresent["Container_3"] + "Container 3: ", font=font, fill=255)
+    draw.text((x, top + 25), isContainerPresent["Container_4"] + "Container 4: ", font=font, fill=255)
 
     # Display image.
     disp.image(image)
