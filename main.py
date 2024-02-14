@@ -151,10 +151,9 @@ class container:
     
     def getPercentage(thisContainer):
         if thisContainer.initialMass == 0: # handle the edge case
-             val = str(0) + "%"
+             return 0
         else:
-            val = str(round(thisContainer.currentMass / thisContainer.initialMass * 100)) + "%"
-        return val
+            return round(thisContainer.currentMass / thisContainer.initialMass * 100)
 
     # this function updates the current mass locally and in Firebase, it accepts an int 
     # updates the % in Firebase also!
@@ -395,10 +394,10 @@ def update_display():
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
     # Gather the information to display for each container
-    c1 = ("*" if presentContainers["Container_1"] else " ") + "Container 1: " + containerDict["Container_1"].getPercentage()
-    c2 = ("*" if presentContainers["Container_2"] else " ") + "Container 2: " + containerDict["Container_2"].getPercentage()
-    c3 = ("*" if presentContainers["Container_3"] else " ") + "Container 3: " + containerDict["Container_3"].getPercentage()
-    c4 = ("*" if presentContainers["Container_4"] else " ") + "Container 4: " + containerDict["Container_4"].getPercentage()
+    c1 = ("*" if presentContainers["Container_1"] else " ") + "Container 1: " + str(containerDict["Container_1"].getPercentage()) + "%"
+    c2 = ("*" if presentContainers["Container_2"] else " ") + "Container 2: " + str(containerDict["Container_2"].getPercentage()) + "%"
+    c3 = ("*" if presentContainers["Container_3"] else " ") + "Container 3: " + str(containerDict["Container_3"].getPercentage()) + "%"
+    c4 = ("*" if presentContainers["Container_4"] else " ") + "Container 4: " + str(containerDict["Container_4"].getPercentage()) + "%"
 
     # Draw our four lines of text
     draw.text((x, top + 0),  c1, font=font, fill=255)
