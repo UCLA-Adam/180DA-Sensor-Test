@@ -45,6 +45,7 @@ ref = db.reference("/Scale_1/")
 # Note the container names have underscores while the parameters do not
 def update_firebase_container(container, parameter, updated_value):
 	ref.child(container).update({parameter:updated_value})
+
 # update_firebase(Parameter to Update, Value to Update to)
 # Example usage update_firebase_scale("Scale UV", val) 
 def update_firebase_scale(parameter, updated_value):
@@ -53,6 +54,9 @@ def update_firebase_scale(parameter, updated_value):
 # Pull the scale's gain from Firebase, returns a float
 def get_scale_gain():
 	return ref.child("Scale Gain").get()
+
+def get_initial_mass(container):
+	return ref.child(container).child("Initial Container Mass")
 
 # define the variables that will store information, all are floats
 # NAU7802 (ADC)
@@ -162,11 +166,6 @@ class container:
             update_firebase_container(thisContainer.qr,"Initial Container Mass", newMass)
             print(str(thisContainer.qr) + ": Initial mass updated, now " + str(thisContainer.initialMass) + "g")
         thisContainer.updatePercentage()
-
-
-def get_initial_mass(container):
-	return 0
-
 
 # the dictionary to store containers, now pulls the initial masses from firebase 
 containerDict = dict()
@@ -389,6 +388,7 @@ def findRemovedContainer(): # Returns a string with the name of the container th
         cap.release()
         return str(candidates[0])
 
+""" Display container names and percentages on the OLED """
 def update_display():
     # Draw a black filled box to clear the image.
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
@@ -397,7 +397,7 @@ def update_display():
     c1 = ("*" if presentContainers["Container_1"] else " ") + "Container 1: " + containerDict["Container_1"].getPercentage()
     c2 = ("*" if presentContainers["Container_2"] else " ") + "Container 2: " + containerDict["Container_2"].getPercentage()
     c3 = ("*" if presentContainers["Container_3"] else " ") + "Container 3: " + containerDict["Container_3"].getPercentage()
-    c4 = ("*" if presentContainers["Container_4"] else "*") + "Container 4: " + containerDict["Container_4"].getPercentage()
+    c4 = ("*" if presentContainers["Container_4"] else " ") + "Container 4: " + containerDict["Container_4"].getPercentage()
 
     # Draw our four lines of text
     draw.text((x, top + 0),  c1, font=font, fill=255)
