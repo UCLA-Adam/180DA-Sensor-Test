@@ -403,7 +403,7 @@ def update_display():
     cmd = 'df -h | awk \'$NF=="/"{printf "Disk: %d/%d GB  %s", $3,$2,$5}\''
     Disk = subprocess.check_output(cmd, shell=True).decode("utf-8")
 
-    c1 = ("*" if presentContainers["Container_1"] else "-") + "Container 1: "# + containerDict["Container_1"].getPercentage() + "%"
+    c1 = ("*" if presentContainers["Container_1"] else "-") + "Container 1: " + containerDict["Container_1"].getPercentage() + "%"
     # c2 = isContainerPresent["Container_2"] + "Container 2: " + containerDict["Container_2"].getPercentage() + "%"
     # c3 = isContainerPresent["Container_3"] + "Container 3: " + containerDict["Container_3"].getPercentage() + "%"
     # c4 = isContainerPresent["Container_4"] + "Container 4: " + containerDict["Container_4"].getPercentage() + "%"
