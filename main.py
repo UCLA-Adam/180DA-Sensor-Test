@@ -383,6 +383,12 @@ def findRemovedContainer(): # Returns a string with the name of the container th
         cap.release()
         return str(candidates[0])
 
+def isContainerPresent(container):
+    if presentContainers[container]:
+        return "*"
+    else: 
+        return " "
+
 def update_display():
     # Draw a black filled box to clear the image.
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
@@ -398,10 +404,10 @@ def update_display():
     Disk = subprocess.check_output(cmd, shell=True).decode("utf-8")
 
     # Four lines of text
-    draw.text((x, top + 0),  "Container 1: ✓", font=font, fill=255)
-    draw.text((x, top + 8),  "Container 2: " + str(presentContainers["Container_2"]), font=font, fill=255)
-    draw.text((x, top + 16), "Container 3: " + str(presentContainers["Container_3"]), font=font, fill=255)
-    draw.text((x, top + 25), "Container 4: " + str(presentContainers["Container_4"]), font=font, fill=255)
+    draw.text((x, top + 0),  "Container 1: " + isContainerPresent["Container_1"], font=font, fill=255)
+    draw.text((x, top + 8),  "Container 2: " + isContainerPresent["Container_2"], font=font, fill=255)
+    draw.text((x, top + 16), "Container 3: " + isContainerPresent["Container_3"], font=font, fill=255)
+    draw.text((x, top + 25), "Container 4: " + isContainerPresent["Container_4"], font=font, fill=255)
 
     # Display image.
     disp.image(image)
