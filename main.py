@@ -16,19 +16,28 @@ from firebase_admin import credentials
 from firebase_admin import db
 import json
 import subprocess
-# from board import SCL, SDA, D4
 import digitalio
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1305
 from requests import get
+import urllib.request
 
+# Obtain the local and public IP address of the Pi + print to console 
 cmd = "hostname -I | cut -d' ' -f1"
 print("Local IP: " + str(subprocess.check_output(cmd, shell=True).decode("utf-8")))
-print('Public IP: {}'.format(get('https://api.ipify.org').content.decode('utf8')))
+external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+print("Public IP: " + str(external_ip))
 
+# Push the IP to Firebase
+# If we are using eduroam we can use this IP to log in remotely
+def update_firebase_ip(IP):
+    update_firebase_scale("Public IP", str(IP))
+
+# Degree sign const for easy use later on
 degree_sign = u'\N{DEGREE SIGN}'
 # Tuned to account for small bumps on the scale when placing and removing containers
-thresholdMass = 27 # units are grams, +/-1 gram 
+# units are grams, +/-1 gram 
+thresholdMass = 27 
 
 # Fetch the service account key JSON file contents
 cred = credentials.Certificate('ece-180-project-firebase-adminsdk-7eg04-74b6c29e0b.json')
@@ -58,16 +67,22 @@ def update_firebase_scale(parameter, updated_value):
 def get_scale_gain():
 	return ref.child("Scale Gain").get()
 
+# Pull the last known initial mass from Firebase
+# If it is zero we register a new mass
+# If it is less than what we measured, the initial mass = measured mass
 def get_initial_mass(container):
     # Get a database reference to our posts
     initialMass = db.reference("/Scale_1/" + container + "/Initial Container Mass" )
     return initialMass.get()
 
+# Pull the user's set container name from Firebase
+# This is set in the UI
 def get_name(container):
     # Get a database reference to our posts
     name = db.reference("/Scale_1/" + container + "/Container Name" )
     return name.get()
 
+# Push the IP 
 # define the variables that will store information, all are floats
 # NAU7802 (ADC)
 # SHT40 (temp + humidity sensor)
@@ -168,12 +183,12 @@ class container:
     # this function updates the current mass locally and in Firebase, it accepts an int 
     # updates the % in Firebase also!
     def updateCurrentMass(thisContainer, newMass):
-        thisContainer.currentMass = newMass
+        thisContainer.currentMass = round(newMass,2)
         print(str(thisContainer.qr) + ": Current mass updated, now " + str(thisContainer.currentMass) + "g")
-        update_firebase_container(thisContainer.qr,"Current Container Mass", newMass)
+        update_firebase_container(thisContainer.qr,"Current Container Mass", round(newMass,2))
         if newMass > thisContainer.initialMass:
             thisContainer.initialMass = thisContainer.currentMass
-            update_firebase_container(thisContainer.qr,"Initial Container Mass", newMass)
+            update_firebase_container(thisContainer.qr,"Initial Container Mass", round(newMass,2))
             print(str(thisContainer.qr) + ": Initial mass updated, now " + str(thisContainer.initialMass) + "g")
         thisContainer.updatePercentage()
 
